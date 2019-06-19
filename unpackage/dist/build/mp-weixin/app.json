@@ -1,0 +1,56 @@
+{
+  "pages": [
+    "pages/tabBar/cart",
+    "pages/tabBar/indexSeller",
+    "pages/tabBar/seller",
+    "pages/tabBar/user",
+    "pages/order/confirmation",
+    "pages/address/address",
+    "pages/address/addressAdd",
+    "pages/address/addressUpd",
+    "pages/apply/indexSellerApply",
+    "pages/apply/indexShopApply",
+    "pages/apply/sellerApply",
+    "pages/apply/shopApply",
+    "pages/user/order_list/order_list",
+    "pages/user/order_list/order_list_temp",
+    "pages/user/setting/setting",
+    "pages/user/myQR/myQR"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#ffffff",
+    "backgroundColorTop": "#ffffff",
+    "backgroundColorBottom": "#ffffff"
+  },
+  "usingComponents": {},
+  "tabBar": {
+    "color": "#333333",
+    "selectedColor": "#f06c7a",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/tabBar/cart",
+        "iconPath": "static/img/tabBar/cart.png",
+        "selectedIconPath": "static/img/tabBar/cart-on.png",
+        "text": "我要订水"
+      },
+      {
+        "pagePath": "pages/tabBar/user",
+        "iconPath": "static/img/tabBar/user.png",
+        "selectedIconPath": "static/img/tabBar/user-on.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于为您加载附近的水站"
+    }
+  },
+  "sitemapLocation": "sitemap.json"
+}
