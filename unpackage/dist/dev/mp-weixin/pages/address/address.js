@@ -159,7 +159,7 @@ __webpack_require__.r(__webpack_exports__);
       deduction: 0 //抵扣价格
     };
   },
-  onLoad: function onLoad() {var _this = this;
+  onShow: function onShow() {var _this = this;
     uni.request({
       url: this.$tempUrl + 'userAddress/list',
       method: 'GET',

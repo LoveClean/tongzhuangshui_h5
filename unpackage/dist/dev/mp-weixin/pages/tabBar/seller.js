@@ -347,10 +347,8 @@ var render = function() {
                   "view",
                   {
                     key: goods.id,
-                    class:
-                      goods.orderStatus === 2
-                        ? "product watermark-image"
-                        : "product",
+                    staticClass: "product",
+                    class: goods.orderStatus === 2 ? "watermark-image" : "",
                     attrs: { eventid: "3525b720-1-" + index0 },
                     on: {
                       tap: function($event) {

@@ -73,6 +73,20 @@ export default {
 					variableName: 'shopAddress' //自定义变量名
 				},
 				{
+					type: 'pics',
+					title: '营业执照',
+					itemArray: [
+						{
+							title: '营业执照'
+							// ,ignore: true
+						}
+					],
+					variableName: 'pic',
+					clearColor: '#c0ebd7',
+					// ignore: 'false',
+					variableName: 'picture' //自定义变量名
+				},
+				{
 					title: '经营人',
 					variableName: 'sellerName' //自定义变量名
 				},

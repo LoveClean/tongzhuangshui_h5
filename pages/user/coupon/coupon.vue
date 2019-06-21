@@ -1,7 +1,8 @@
 <template>
 	<view>
 		<view class="tabr" :style="{ top: headerTop }">
-			<view :class="{ on: typeClass == 'valid' }" @tap="switchType('valid')">可用({{ couponValidList.length }})</view>
+			<view :class="{ on: typeClass == 'valid' }" @tap="switchType('valid')">未使用({{ couponValidList.length }})</view>
+			<view :class="{ on: typeClass == 'completed' }" @tap="switchType('completed')">已使用</view>
 			<view :class="{ on: typeClass == 'invalid' }" @tap="switchType('invalid')">已失效</view>
 			<view class="border" :class="typeClass"></view>
 		</view>
@@ -11,30 +12,46 @@
 			<view class="sub-list valid" :class="subState">
 				<view class="tis" v-if="couponValidList.length == 0">没有数据~</view>
 				<view class="row" v-for="(row, index) in couponValidList" :key="index">
-					<!-- 删除按钮 -->
-					<view class="menu" @tap.stop="deleteCoupon(row.id, couponValidList)"><view class="icon shanchu"></view></view>
 					<!-- content -->
-					<view
-						class="carrier"
-						:class="[typeClass == 'valid' ? (theIndex == index ? 'open' : oldIndex == index ? 'close' : '') : '']"
-						@touchstart="touchStart(index, $event)"
-						@touchmove="touchMove(index, $event)"
-						@touchend="touchEnd(index, $event)"
-						@tap="selected(row)"
-					>
+					<view class="carrier">
 						<view class="left">
-							<view class="title">{{ row.title }}</view>
-							<view class="term">{{ row.termStart }} ~ {{ row.termEnd }}</view>
+							<view class="title">{{ row.couponsName }}</view>
+							<view class="term">{{ row.effectiveDate }} ~ {{ row.expiryDate }}</view>
 							<view class="gap-top"></view>
 							<view class="gap-bottom"></view>
 						</view>
-						<view class="right">
+						<view class="right" :class="row.couponsScope === 4 ? '' : 'onlyShop'" @tap="toCart()">
 							<view class="ticket">
-								<view class="num">{{ row.ticket }}</view>
+								<view class="num">{{ row.couponsAmount }}</view>
 								<view class="unit">元</view>
 							</view>
-							<view class="criteria">{{ row.criteria }}</view>
-							<view class="use">去使用</view>
+							<view class="criteria" v-if="row.minimumAmount !== 0">满{{ row.minimumAmount }}使用</view>
+							<view class="criteria" v-if="row.minimumAmount === 0">无门槛</view>
+							<view class="use" :class="row.couponsScope === 4 ? '' : 'onlyShop'">去使用</view>
+						</view>
+					</view>
+				</view>
+			</view>
+			<view class="sub-list completed" :class="subState">
+				<view class="tis" v-if="completedList.length == 0">没有数据~</view>
+				<view class="row" v-for="(row, index) in completedList" :key="index">
+					<!-- content -->
+					<view class="carrier">
+						<view class="left">
+							<view class="title">{{ row.couponsName }}</view>
+							<view class="term">{{ row.effectiveDate }} ~ {{ row.expiryDate }}</view>
+							<!-- <view class="icon shixiao"></view> -->
+							<view class="gap-top"></view>
+							<view class="gap-bottom"></view>
+						</view>
+						<view class="right completed">
+							<view class="ticket">
+								<view class="num">{{ row.couponsAmount }}</view>
+								<view class="unit">元</view>
+							</view>
+							<view class="criteria" v-if="row.minimumAmount !== 0">满{{ row.minimumAmount }}使用</view>
+							<view class="criteria" v-if="row.minimumAmount === 0">无门槛</view>
+							<view class="use2">已使用</view>
 						</view>
 					</view>
 				</view>
@@ -42,30 +59,23 @@
 			<view class="sub-list invalid" :class="subState">
 				<view class="tis" v-if="couponinvalidList.length == 0">没有数据~</view>
 				<view class="row" v-for="(row, index) in couponinvalidList" :key="index">
-					<!-- 删除按钮 -->
-					<view class="menu" @tap.stop="deleteCoupon(row.id, couponinvalidList)"><view class="icon shanchu"></view></view>
 					<!-- content -->
-					<view
-						class="carrier"
-						:class="[typeClass == 'invalid' ? (theIndex == index ? 'open' : oldIndex == index ? 'close' : '') : '']"
-						@touchstart="touchStart(index, $event)"
-						@touchmove="touchMove(index, $event)"
-						@touchend="touchEnd(index, $event)"
-					>
+					<view class="carrier">
 						<view class="left">
-							<view class="title">{{ row.title }}</view>
-							<view class="term">{{ row.termStart }} ~ {{ row.termEnd }}</view>
+							<view class="title">{{ row.couponsName }}</view>
+							<view class="term">{{ row.effectiveDate }} ~ {{ row.expiryDate }}</view>
 							<view class="icon shixiao"></view>
 							<view class="gap-top"></view>
 							<view class="gap-bottom"></view>
 						</view>
 						<view class="right invalid">
 							<view class="ticket">
-								<view class="num">{{ row.ticket }}</view>
+								<view class="num">{{ row.couponsAmount }}</view>
 								<view class="unit">元</view>
 							</view>
-							<view class="criteria">{{ row.criteria }}</view>
-							<view class="use">去查看</view>
+							<view class="criteria" v-if="row.minimumAmount !== 0">满{{ row.minimumAmount }}使用</view>
+							<view class="criteria" v-if="row.minimumAmount === 0">无门槛</view>
+							<view class="use2">已过期</view>
 						</view>
 					</view>
 				</view>
@@ -78,25 +88,13 @@
 export default {
 	data() {
 		return {
-			couponValidList: [
-				{ id: 1, title: '日常用品立减10元', termStart: '2019-04-01', termEnd: '2019-05-30', ticket: '10', criteria: '满50使用' },
-				{ id: 2, title: '家用电器立减100元', termStart: '2019-04-01', termEnd: '2019-05-30', ticket: '100', criteria: '满500使用' },
-				{ id: 3, title: '全场立减10元', termStart: '2019-04-01', termEnd: '2019-05-30', ticket: '10', criteria: '无门槛' },
-				{ id: 4, title: '全场立减50元', termStart: '2019-04-01', termEnd: '2019-05-30', ticket: '50', criteria: '满1000使用' }
-			],
-			couponinvalidList: [
-				{ id: 1, title: '日常用品立减10元', termStart: '2019-04-01', termEnd: '2019-05-30', ticket: '10', criteria: '满50使用' },
-				{ id: 2, title: '家用电器立减100元', termStart: '2019-04-01', termEnd: '2019-05-30', ticket: '100', criteria: '满500使用' },
-				{ id: 3, title: '全场立减10元', termStart: '2019-04-01', termEnd: '2019-05-30', ticket: '10', criteria: '无门槛' },
-				{ id: 4, title: '全场立减50元', termStart: '2019-04-01', termEnd: '2019-05-30', ticket: '50', criteria: '满1000使用' }
-			],
+			couponValidList: [],
+			completedList: [],
+			couponinvalidList: [],
 			headerTop: 0,
 			//控制滑动效果
 			typeClass: 'valid',
-			subState: '',
-			theIndex: null,
-			oldIndex: null,
-			isStop: false
+			subState: 'showvalid'
 		};
 	},
 	onPageScroll(e) {},
@@ -106,8 +104,19 @@ export default {
 			uni.stopPullDownRefresh();
 		}, 1000);
 	},
-	onLoad(option) {
-		console.log(option);
+	onLoad() {
+		uni.request({
+			url: this.$tempUrl + 'buyer/coupons/list',
+			method: 'GET',
+			data: { openId: uni.getStorageSync('openId') },
+			success: res => {
+				console.log(res.data.data);
+				const data = res.data.data;
+				this.couponValidList = data.unused;
+				this.completedList = data.used;
+				this.couponinvalidList = data.disabled;
+			}
+		});
 		//兼容H5下排序栏位置
 		// #ifdef H5
 		//定时器方式循环获取高度为止，这么写的原因是onLoad中head未必已经渲染出来。
@@ -119,15 +128,12 @@ export default {
 			}
 		}, 1);
 		// #endif
+		console.log(this.subState);
 	},
 	methods: {
-		selected(row) {
-			uni.setStorage({
-				key: 'confirmCoupon',
-				data: row,
-				success: () => {
-					uni.navigateBack({});
-				}
+		toCart() {
+			uni.switchTab({
+				url: '../../tabBar/cart'
 			});
 		},
 		switchType(type) {
@@ -140,77 +146,6 @@ export default {
 			});
 			this.typeClass = type;
 			this.subState = this.typeClass == '' ? '' : 'show' + type;
-			setTimeout(() => {
-				this.oldIndex = null;
-				this.theIndex = null;
-				this.subState = this.typeClass == 'valid' ? '' : this.subState;
-			}, 200);
-		},
-		//控制左滑删除效果-begin
-		touchStart(index, event) {
-			//多点触控不触发
-			if (event.touches.length > 1) {
-				this.isStop = true;
-				return;
-			}
-			this.oldIndex = this.theIndex;
-			this.theIndex = null;
-			//初始坐标
-			this.initXY = [event.touches[0].pageX, event.touches[0].pageY];
-		},
-		touchMove(index, event) {
-			//多点触控不触发
-			if (event.touches.length > 1) {
-				this.isStop = true;
-				return;
-			}
-			let moveX = event.touches[0].pageX - this.initXY[0];
-			let moveY = event.touches[0].pageY - this.initXY[1];
-
-			if (this.isStop || Math.abs(moveX) < 5) {
-				return;
-			}
-			if (Math.abs(moveY) > Math.abs(moveX)) {
-				// 竖向滑动-不触发左滑效果
-				this.isStop = true;
-				return;
-			}
-
-			if (moveX < 0) {
-				this.theIndex = index;
-				this.isStop = true;
-			} else if (moveX > 0) {
-				if (this.theIndex != null && this.oldIndex == this.theIndex) {
-					this.oldIndex = index;
-					this.theIndex = null;
-					this.isStop = true;
-					setTimeout(() => {
-						this.oldIndex = null;
-					}, 150);
-				}
-			}
-		},
-
-		touchEnd(index, $event) {
-			//解除禁止触发状态
-			this.isStop = false;
-		},
-
-		//删除商品
-		deleteCoupon(id, List) {
-			let len = List.length;
-			for (let i = 0; i < len; i++) {
-				if (id == List[i].id) {
-					List.splice(i, 1);
-					break;
-				}
-			}
-			this.oldIndex = null;
-			this.theIndex = null;
-		},
-
-		discard() {
-			//丢弃
 		}
 	}
 };
@@ -272,7 +207,7 @@ page {
 	top: 0;
 	z-index: 10;
 	view {
-		width: 50%;
+		width: 33%;
 		height: 90upx;
 		justify-content: center;
 		align-items: center;
@@ -286,8 +221,11 @@ page {
 		height: 4upx;
 		background-color: #f06c7a;
 		transition: all 0.3s ease-out;
-		&.invalid {
+		&.completed {
 			transform: translate3d(100%, 0, 0);
+		}
+		&.invalid {
+			transform: translate3d(200%, 0, 0);
 		}
 	}
 }
@@ -296,36 +234,37 @@ page {
 	display: block;
 	position: relative;
 }
-@keyframes showValid {
-	0% {
-		transform: translateX(-100%);
-	}
-	100% {
-		transform: translateX(0);
-	}
-}
-@keyframes showInvalid {
-	0% {
-		transform: translateX(0);
-	}
-	100% {
-		transform: translateX(-100%);
-	}
-}
 .sub-list {
-	&.invalid {
+	&.valid {
+		position: absolute;
+		top: 0;
+		left: 0;
+		display: none;
+	}
+	&.completed {
 		position: absolute;
 		top: 0;
 		left: 100%;
 		display: none;
 	}
+	&.invalid {
+		position: absolute;
+		top: 0;
+		left: 200%;
+		display: none;
+	}
+	transition: all 0.3s ease-out;
 	&.showvalid {
 		display: flex;
-		animation: showValid 0.2s linear both;
+		transform: translateX(0);
+	}
+	&.showcompleted {
+		display: flex;
+		transform: translateX(-100%);
 	}
 	&.showinvalid {
 		display: flex;
-		animation: showInvalid 0.2s linear both;
+		transform: translateX(-200%);
 	}
 	width: 100%;
 	padding: 20upx 0 120upx 0;
@@ -363,28 +302,6 @@ page {
 			z-index: 2;
 		}
 		.carrier {
-			@keyframes showMenu {
-				0% {
-					transform: translateX(0);
-				}
-				100% {
-					transform: translateX(-28%);
-				}
-			}
-			@keyframes closeMenu {
-				0% {
-					transform: translateX(-28%);
-				}
-				100% {
-					transform: translateX(0);
-				}
-			}
-			&.open {
-				animation: showMenu 0.25s linear both;
-			}
-			&.close {
-				animation: closeMenu 0.15s linear both;
-			}
 			background-color: #fff;
 			position: absolute;
 			width: 100%;
@@ -435,10 +352,25 @@ page {
 				width: 28%;
 				color: #fff;
 				background: linear-gradient(to right, #ec625c, #ee827f);
+				&.onlyShop {
+					background: linear-gradient(to right, #01aaed, #1e9fff);
+				}
+				&.completed {
+					background: linear-gradient(to right, #aaa, #999);
+					.use {
+						color: #aaa;
+					}
+					.use2 {
+						font-size: 24upx;
+					}
+				}
 				&.invalid {
 					background: linear-gradient(to right, #aaa, #999);
 					.use {
 						color: #aaa;
+					}
+					.use2 {
+						font-size: 24upx;
 					}
 				}
 				justify-content: center;
@@ -474,38 +406,12 @@ page {
 					color: #ee827f;
 					border-radius: 40upx;
 					padding: 0 10upx;
+					&.onlyShop {
+						color: #1e9fff;
+					}
 				}
 			}
 		}
-		/*
-			<view class="carrier" :class="[theIndex==index?'open':oldIndex==index?'close':'']" @touchstart="touchStart(index,$event)" @touchmove="touchMove(index,$event)" @touchend="touchEnd(index,$event)">
-				<view class="left">
-					<view class="title">
-						10元日常用品类
-					</view>
-					<view class="term">
-						2019-04-01~2019-05-30
-					</view>
-				</view>
-				<view class="right">
-					<view class="ticket">
-						<view class="num">
-							10
-						</view>
-						<view class="unit">
-							元
-						</view>
-					</view>
-					<view class="criteria">
-						满50使用
-					</view>
-					<view class="use">
-						去使用
-					</view>
-				</view>
-			</view>
-			* 
-			* */
 	}
 }
 </style>

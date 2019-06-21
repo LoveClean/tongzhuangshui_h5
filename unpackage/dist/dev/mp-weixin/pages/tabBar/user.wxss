@@ -75,7 +75,7 @@ page {
 .header {
   width: 92%;
   padding: 0 4%;
-  height: 100rpx;
+  height: 50rpx;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -124,14 +124,14 @@ page {
 }
 .place {
   background-color: #f06c7a;
-  height: 100rpx;
+  height: 60rpx;
 }
 .place-bottom {
   height: 300rpx;
 }
 .user {
   width: 92%;
-  padding: 0 4%;
+  padding: 10rpx 4% 120rpx 4%;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -141,7 +141,6 @@ page {
       -ms-flex-align: center;
           align-items: center;
   background-color: #f06c7a;
-  padding-bottom: 120rpx;
 }
 .user .left {
     width: 20vw;
@@ -185,6 +184,14 @@ page {
       -webkit-border-radius: 50%;
               border-radius: 50%;
       border: 40rpx solid #f06c7a;
+}
+.user .headView .iconBorder {
+      position: absolute;
+      width: 20vw;
+      height: 20vw;
+      -webkit-border-radius: 50%;
+              border-radius: 50%;
+      border: solid 1rpx #fff;
 }
 .user .right {
     width: 100%;

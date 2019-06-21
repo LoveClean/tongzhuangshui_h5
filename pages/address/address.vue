@@ -44,7 +44,7 @@ export default {
 			deduction: 0 //抵扣价格
 		};
 	},
-	onLoad() {
+	onShow() {
 		uni.request({
 			url: this.$tempUrl + 'userAddress/list',
 			method: 'GET',

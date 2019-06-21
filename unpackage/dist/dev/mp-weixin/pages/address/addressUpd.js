@@ -115,6 +115,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 var _inputs = _interopRequireDefault(__webpack_require__(/*! @/components/QuShe-inputs/inputs.vue */ "../../../../Users/64165/Desktop/桶装水/tongzhuangshui_h5/components/QuShe-inputs/inputs.vue"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
 {
   data: function data() {
@@ -222,6 +223,47 @@ var _inputs = _interopRequireDefault(__webpack_require__(/*! @/components/QuShe-
     }
   },
   methods: {
+    delButton: function delButton() {var _this = this;
+      uni.showModal({
+        title: '提示',
+        content: '确认删除此地址？',
+        success: function success(res) {
+          if (res.confirm) {
+            uni.request({
+              url: _this.$tempUrl + 'userAddress/delete',
+              method: 'DELETE',
+              data: {
+                id: _this.id,
+                openId: uni.getStorageSync('openId') },
+
+              success: function success(res) {
+                if (res.data.code === 0) {
+                  uni.getStorage({
+                    key: 'confirmAddr',
+                    success: function success(ret) {
+                      // console.log(ret.data.id);
+                      // console.log(this.id);
+                      if (ret.data.id == _this.id) {
+                        uni.removeStorage({
+                          key: 'confirmAddr',
+                          success: function success() {
+                            uni.navigateBack({ delta: 1 });
+                          } });
+
+                      } else {
+                        uni.navigateBack({ delta: 1 });
+                      }
+                    } });
+
+                }
+              } });
+
+          } else if (res.cancel) {
+            console.log('用户点击取消');
+          }
+        } });
+
+    },
     activeFc: function activeFc(res) {
       var _res = res;
       uni.showToast({
@@ -281,6 +323,29 @@ var render = function() {
   return _c(
     "view",
     [
+      _c(
+        "button",
+        {
+          staticStyle: {
+            position: "fixed",
+            "z-index": "999",
+            top: "40rpx",
+            right: "40rpx"
+          },
+          attrs: {
+            size: "mini",
+            type: "warn",
+            plain: "true",
+            eventid: "ddf55240-0"
+          },
+          on: {
+            tap: function($event) {
+              _vm.delButton()
+            }
+          }
+        },
+        [_vm._v("删除")]
+      ),
       _c("inputs", {
         attrs: {
           inputsArray: _vm.inputsArray,
@@ -293,7 +358,7 @@ var render = function() {
           contentSet: _vm.contentSet,
           buttonStyle: _vm.buttonStyle,
           inputDebounceSet: _vm.inputDebounceSet,
-          eventid: "ddf55240-0",
+          eventid: "ddf55240-1",
           mpcomid: "ddf55240-0"
         },
         on: { chaildOpenEvent: _vm.openWin, activeFc: _vm.activeFc }

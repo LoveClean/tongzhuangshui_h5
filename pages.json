@@ -66,6 +66,16 @@
 				"softinputNavBar": "none"
 			}
 		}, {
+			"path": "pages/order/orderCoupon",
+			"style": {
+				"navigationBarTitleText": "优惠券",
+				"navigationBarBackgroundColor": "#f06c7a",
+				"navigationBarTextStyle": "white",
+				"app-plus": {
+					"bounce": "none"
+				}
+			}
+		}, {
 			"path": "pages/address/address",
 			"style": {
 				"navigationBarTitleText": "我的地址",

@@ -18,6 +18,7 @@
 			<view class="headView">
 				<open-data class="icon" type="userAvatarUrl"></open-data>
 				<view class="icon"></view>
+				<view class="iconBorder"></view>
 			</view>
 			<!-- 昵称,个性签名 -->
 			<view class="right">
@@ -312,7 +313,7 @@ page {
 .header {
 	width: 92%;
 	padding: 0 4%;
-	height: 100upx;
+	height: 50upx;
 	display: flex;
 	justify-content: flex-end;
 	align-items: center;
@@ -341,7 +342,7 @@ page {
 }
 .place {
 	background-color: #f06c7a;
-	height: 100upx;
+	height: 60upx;
 	/*  #ifdef  APP-PLUS  */
 	margin-top: var(--status-bar-height);
 	/*  #endif  */
@@ -351,12 +352,11 @@ page {
 }
 .user {
 	width: 92%;
-	padding: 0 4%;
+	padding: 10upx 4% 120upx 4%;
 	display: flex;
 	align-items: center;
 	// position: relative;
 	background-color: #f06c7a;
-	padding-bottom: 120upx;
 	.left {
 		width: 20vw;
 		height: 20vw;
@@ -385,6 +385,13 @@ page {
 			height: 20vw;
 			border-radius: 50%;
 			border: 40rpx solid #f06c7a;
+		}
+		.iconBorder {
+			position: absolute;
+			width: 20vw;
+			height: 20vw;
+			border-radius: 50%;
+			border: solid 1upx #fff;
 		}
 	}
 	.right {

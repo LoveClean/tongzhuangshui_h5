@@ -197,6 +197,7 @@ __webpack_require__.r(__webpack_exports__);
 
   },
   onLoad: function onLoad(option) {
+    uni.showLoading({ title: '加载中' });
     //option为object类型，会序列化上个页面传递的参数
     console.log('option: ' + JSON.stringify(option));
     var tbIndex = parseInt(option.tbIndex) + 1;
@@ -253,6 +254,9 @@ __webpack_require__.r(__webpack_exports__);
           success: function success(res) {
             _this3.orderList[tbIndex] = res.data.data;
             _this3.list = _this3.orderList[tbIndex];
+            setTimeout(function () {
+              uni.hideLoading();
+            }, 100);
           } });
 
       } else {
@@ -589,13 +593,9 @@ var render = function() {
                       _vm._v(_vm._s(row.payableAmount))
                     ])
                   ]),
-                  row.orderAmount - row.payableAmount > 0
+                  row.couponsAmount > 0
                     ? _c("view", { staticClass: "nominal" }, [
-                        _vm._v(
-                          "(已优惠 ￥" +
-                            _vm._s(row.orderAmount - row.payableAmount) +
-                            ")"
-                        )
+                        _vm._v("(已优惠 ￥" + _vm._s(row.couponsAmount) + ")")
                       ])
                     : _vm._e()
                 ]),

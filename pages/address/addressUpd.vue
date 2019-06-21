@@ -1,5 +1,6 @@
 <template>
 	<view>
+		<button size="mini" type="warn" plain="true" @tap="delButton()" style="position:fixed; z-index:999;top: 40upx;right: 40upx;">删除</button>
 		<inputs
 			:inputsArray="inputsArray"
 			activeName="保存并使用"
@@ -125,6 +126,47 @@ export default {
 		}
 	},
 	methods: {
+		delButton() {
+			uni.showModal({
+				title: '提示',
+				content: '确认删除此地址？',
+				success: res => {
+					if (res.confirm) {
+						uni.request({
+							url: this.$tempUrl + 'userAddress/delete',
+							method: 'DELETE',
+							data: {
+								id: this.id,
+								openId: uni.getStorageSync('openId')
+							},
+							success: res => {
+								if (res.data.code === 0) {
+									uni.getStorage({
+										key: 'confirmAddr',
+										success: ret => {
+											// console.log(ret.data.id);
+											// console.log(this.id);
+											if (ret.data.id == this.id) {
+												uni.removeStorage({
+													key: 'confirmAddr',
+													success: () => {
+														uni.navigateBack({ delta: 1 });
+													}
+												});
+											} else {
+												uni.navigateBack({ delta: 1 });
+											}
+										}
+									});
+								}
+							}
+						});
+					} else if (res.cancel) {
+						console.log('用户点击取消');
+					}
+				}
+			});
+		},
 		activeFc(res) {
 			const _res = res;
 			uni.showToast({

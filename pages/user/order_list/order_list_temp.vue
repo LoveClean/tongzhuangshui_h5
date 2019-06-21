@@ -37,7 +37,7 @@
 							合计￥
 							<view class="price">{{ row.payableAmount }}</view>
 						</view>
-						<view class="nominal" v-if="row.orderAmount - row.payableAmount > 0">(已优惠 ￥{{ row.orderAmount - row.payableAmount }})</view>
+						<view class="nominal" v-if="row.couponsAmount > 0">(已优惠 ￥{{ row.couponsAmount }})</view>
 					</view>
 					<view class="btns">
 						<block v-if="row.type == 'unpaid'">
@@ -82,6 +82,7 @@ export default {
 		};
 	},
 	onLoad(option) {
+		uni.showLoading({ title: '加载中' });
 		//option为object类型，会序列化上个页面传递的参数
 		console.log('option: ' + JSON.stringify(option));
 		let tbIndex = parseInt(option.tbIndex) + 1;
@@ -138,6 +139,9 @@ export default {
 					success: res => {
 						this.orderList[tbIndex] = res.data.data;
 						this.list = this.orderList[tbIndex];
+						setTimeout(() => {
+							uni.hideLoading();
+						}, 100);
 					}
 				});
 			} else {

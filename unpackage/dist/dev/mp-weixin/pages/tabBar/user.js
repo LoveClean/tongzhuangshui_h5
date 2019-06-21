@@ -203,6 +203,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 {
   data: function data() {
     return {
@@ -405,7 +406,8 @@ var render = function() {
             staticClass: "icon",
             attrs: { type: "userAvatarUrl", mpcomid: "7f64c7ac-0" }
           }),
-          _c("view", { staticClass: "icon" })
+          _c("view", { staticClass: "icon" }),
+          _c("view", { staticClass: "iconBorder" })
         ],
         1
       ),

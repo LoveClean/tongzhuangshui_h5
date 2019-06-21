@@ -6,7 +6,7 @@
 			<!-- <view v-show="goodsList.length === 0">暂无订单~</view> -->
 			<view class="goods-list" v-show="goodsList.length > 0">
 				<view class="product-list">
-					<view :class="goods.orderStatus === 2 ? 'product watermark-image' : 'product'" v-for="goods in goodsList" :key="goods.id" @tap="changeOrderStatus(goods)">
+					<view class="product" :class="goods.orderStatus === 2 ? 'watermark-image' : ''" v-for="goods in goodsList" :key="goods.id" @tap="changeOrderStatus(goods)">
 						<!-- <image mode="widthFix" :src="goods.img"></image> -->
 						<!-- <view class="info">
 						<view class="slogan">企业名称：</view>

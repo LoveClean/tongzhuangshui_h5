@@ -190,28 +190,26 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+
+
+
+
+
+
+
+
+
 {
   data: function data() {
     return {
-      couponValidList: [
-      { id: 1, title: '日常用品立减10元', termStart: '2019-04-01', termEnd: '2019-05-30', ticket: '10', criteria: '满50使用' },
-      { id: 2, title: '家用电器立减100元', termStart: '2019-04-01', termEnd: '2019-05-30', ticket: '100', criteria: '满500使用' },
-      { id: 3, title: '全场立减10元', termStart: '2019-04-01', termEnd: '2019-05-30', ticket: '10', criteria: '无门槛' },
-      { id: 4, title: '全场立减50元', termStart: '2019-04-01', termEnd: '2019-05-30', ticket: '50', criteria: '满1000使用' }],
-
-      couponinvalidList: [
-      { id: 1, title: '日常用品立减10元', termStart: '2019-04-01', termEnd: '2019-05-30', ticket: '10', criteria: '满50使用' },
-      { id: 2, title: '家用电器立减100元', termStart: '2019-04-01', termEnd: '2019-05-30', ticket: '100', criteria: '满500使用' },
-      { id: 3, title: '全场立减10元', termStart: '2019-04-01', termEnd: '2019-05-30', ticket: '10', criteria: '无门槛' },
-      { id: 4, title: '全场立减50元', termStart: '2019-04-01', termEnd: '2019-05-30', ticket: '50', criteria: '满1000使用' }],
-
+      couponValidList: [],
+      completedList: [],
+      couponinvalidList: [],
       headerTop: 0,
       //控制滑动效果
       typeClass: 'valid',
-      subState: '',
-      theIndex: null,
-      oldIndex: null,
-      isStop: false };
+      subState: 'showvalid' };
 
   },
   onPageScroll: function onPageScroll(e) {},
@@ -221,8 +219,19 @@ __webpack_require__.r(__webpack_exports__);
       uni.stopPullDownRefresh();
     }, 1000);
   },
-  onLoad: function onLoad(option) {
-    console.log(option);
+  onLoad: function onLoad() {var _this = this;
+    uni.request({
+      url: this.$tempUrl + 'buyer/coupons/list',
+      method: 'GET',
+      data: { openId: uni.getStorageSync('openId') },
+      success: function success(res) {
+        console.log(res.data.data);
+        var data = res.data.data;
+        _this.couponValidList = data.unused;
+        _this.completedList = data.used;
+        _this.couponinvalidList = data.disabled;
+      } });
+
     //兼容H5下排序栏位置
 
 
@@ -234,18 +243,15 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+    console.log(this.subState);
   },
   methods: {
-    selected: function selected(row) {
-      uni.setStorage({
-        key: 'confirmCoupon',
-        data: row,
-        success: function success() {
-          uni.navigateBack({});
-        } });
+    toCart: function toCart() {
+      uni.switchTab({
+        url: '../../tabBar/cart' });
 
     },
-    switchType: function switchType(type) {var _this = this;
+    switchType: function switchType(type) {
       if (this.typeClass == type) {
         return;
       }
@@ -255,77 +261,6 @@ __webpack_require__.r(__webpack_exports__);
 
       this.typeClass = type;
       this.subState = this.typeClass == '' ? '' : 'show' + type;
-      setTimeout(function () {
-        _this.oldIndex = null;
-        _this.theIndex = null;
-        _this.subState = _this.typeClass == 'valid' ? '' : _this.subState;
-      }, 200);
-    },
-    //控制左滑删除效果-begin
-    touchStart: function touchStart(index, event) {
-      //多点触控不触发
-      if (event.touches.length > 1) {
-        this.isStop = true;
-        return;
-      }
-      this.oldIndex = this.theIndex;
-      this.theIndex = null;
-      //初始坐标
-      this.initXY = [event.touches[0].pageX, event.touches[0].pageY];
-    },
-    touchMove: function touchMove(index, event) {var _this2 = this;
-      //多点触控不触发
-      if (event.touches.length > 1) {
-        this.isStop = true;
-        return;
-      }
-      var moveX = event.touches[0].pageX - this.initXY[0];
-      var moveY = event.touches[0].pageY - this.initXY[1];
-
-      if (this.isStop || Math.abs(moveX) < 5) {
-        return;
-      }
-      if (Math.abs(moveY) > Math.abs(moveX)) {
-        // 竖向滑动-不触发左滑效果
-        this.isStop = true;
-        return;
-      }
-
-      if (moveX < 0) {
-        this.theIndex = index;
-        this.isStop = true;
-      } else if (moveX > 0) {
-        if (this.theIndex != null && this.oldIndex == this.theIndex) {
-          this.oldIndex = index;
-          this.theIndex = null;
-          this.isStop = true;
-          setTimeout(function () {
-            _this2.oldIndex = null;
-          }, 150);
-        }
-      }
-    },
-
-    touchEnd: function touchEnd(index, $event) {
-      //解除禁止触发状态
-      this.isStop = false;
-    },
-
-    //删除商品
-    deleteCoupon: function deleteCoupon(id, List) {
-      var len = List.length;
-      for (var i = 0; i < len; i++) {
-        if (id == List[i].id) {
-          List.splice(i, 1);
-          break;
-        }
-      }
-      this.oldIndex = null;
-      this.theIndex = null;
-    },
-
-    discard: function discard() {
-      //丢弃
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["default"]))
 
@@ -370,13 +305,26 @@ var render = function() {
             }
           }
         },
-        [_vm._v("可用(" + _vm._s(_vm.couponValidList.length) + ")")]
+        [_vm._v("未使用(" + _vm._s(_vm.couponValidList.length) + ")")]
+      ),
+      _c(
+        "view",
+        {
+          class: { on: _vm.typeClass == "completed" },
+          attrs: { eventid: "74e2203b-1" },
+          on: {
+            tap: function($event) {
+              _vm.switchType("completed")
+            }
+          }
+        },
+        [_vm._v("已使用")]
       ),
       _c(
         "view",
         {
           class: { on: _vm.typeClass == "invalid" },
-          attrs: { eventid: "74e2203b-1" },
+          attrs: { eventid: "74e2203b-2" },
           on: {
             tap: function($event) {
               _vm.switchType("invalid")
@@ -398,76 +346,106 @@ var render = function() {
             : _vm._e(),
           _vm._l(_vm.couponValidList, function(row, index) {
             return _c("view", { key: index, staticClass: "row" }, [
-              _c(
-                "view",
-                {
-                  staticClass: "menu",
-                  attrs: { eventid: "74e2203b-2-" + index },
-                  on: {
-                    tap: function($event) {
-                      $event.stopPropagation()
-                      _vm.deleteCoupon(row.id, _vm.couponValidList)
-                    }
-                  }
-                },
-                [_c("view", { staticClass: "icon shanchu" })]
-              ),
-              _c(
-                "view",
-                {
-                  staticClass: "carrier",
-                  class: [
-                    _vm.typeClass == "valid"
-                      ? _vm.theIndex == index
-                        ? "open"
-                        : _vm.oldIndex == index
-                        ? "close"
-                        : ""
-                      : ""
-                  ],
-                  attrs: { eventid: "74e2203b-3-" + index },
-                  on: {
-                    touchstart: function($event) {
-                      _vm.touchStart(index, $event)
-                    },
-                    touchmove: function($event) {
-                      _vm.touchMove(index, $event)
-                    },
-                    touchend: function($event) {
-                      _vm.touchEnd(index, $event)
-                    },
-                    tap: function($event) {
-                      _vm.selected(row)
-                    }
-                  }
-                },
-                [
-                  _c("view", { staticClass: "left" }, [
-                    _c("view", { staticClass: "title" }, [
-                      _vm._v(_vm._s(row.title))
-                    ]),
-                    _c("view", { staticClass: "term" }, [
-                      _vm._v(
-                        _vm._s(row.termStart) + " ~ " + _vm._s(row.termEnd)
-                      )
-                    ]),
-                    _c("view", { staticClass: "gap-top" }),
-                    _c("view", { staticClass: "gap-bottom" })
+              _c("view", { staticClass: "carrier" }, [
+                _c("view", { staticClass: "left" }, [
+                  _c("view", { staticClass: "title" }, [
+                    _vm._v(_vm._s(row.couponsName))
                   ]),
-                  _c("view", { staticClass: "right" }, [
+                  _c("view", { staticClass: "term" }, [
+                    _vm._v(
+                      _vm._s(row.effectiveDate) + " ~ " + _vm._s(row.expiryDate)
+                    )
+                  ]),
+                  _c("view", { staticClass: "gap-top" }),
+                  _c("view", { staticClass: "gap-bottom" })
+                ]),
+                _c(
+                  "view",
+                  {
+                    staticClass: "right",
+                    class: row.couponsScope === 4 ? "" : "onlyShop",
+                    attrs: { eventid: "74e2203b-3-" + index },
+                    on: {
+                      tap: function($event) {
+                        _vm.toCart()
+                      }
+                    }
+                  },
+                  [
                     _c("view", { staticClass: "ticket" }, [
                       _c("view", { staticClass: "num" }, [
-                        _vm._v(_vm._s(row.ticket))
+                        _vm._v(_vm._s(row.couponsAmount))
                       ]),
                       _c("view", { staticClass: "unit" }, [_vm._v("元")])
                     ]),
-                    _c("view", { staticClass: "criteria" }, [
-                      _vm._v(_vm._s(row.criteria))
+                    row.minimumAmount !== 0
+                      ? _c("view", { staticClass: "criteria" }, [
+                          _vm._v("满" + _vm._s(row.minimumAmount) + "使用")
+                        ])
+                      : _vm._e(),
+                    row.minimumAmount === 0
+                      ? _c("view", { staticClass: "criteria" }, [
+                          _vm._v("无门槛")
+                        ])
+                      : _vm._e(),
+                    _c(
+                      "view",
+                      {
+                        staticClass: "use",
+                        class: row.couponsScope === 4 ? "" : "onlyShop"
+                      },
+                      [_vm._v("去使用")]
+                    )
+                  ]
+                )
+              ])
+            ])
+          })
+        ],
+        2
+      ),
+      _c(
+        "view",
+        { staticClass: "sub-list completed", class: _vm.subState },
+        [
+          _vm.completedList.length == 0
+            ? _c("view", { staticClass: "tis" }, [_vm._v("没有数据~")])
+            : _vm._e(),
+          _vm._l(_vm.completedList, function(row, index) {
+            return _c("view", { key: index, staticClass: "row" }, [
+              _c("view", { staticClass: "carrier" }, [
+                _c("view", { staticClass: "left" }, [
+                  _c("view", { staticClass: "title" }, [
+                    _vm._v(_vm._s(row.couponsName))
+                  ]),
+                  _c("view", { staticClass: "term" }, [
+                    _vm._v(
+                      _vm._s(row.effectiveDate) + " ~ " + _vm._s(row.expiryDate)
+                    )
+                  ]),
+                  _c("view", { staticClass: "gap-top" }),
+                  _c("view", { staticClass: "gap-bottom" })
+                ]),
+                _c("view", { staticClass: "right completed" }, [
+                  _c("view", { staticClass: "ticket" }, [
+                    _c("view", { staticClass: "num" }, [
+                      _vm._v(_vm._s(row.couponsAmount))
                     ]),
-                    _c("view", { staticClass: "use" }, [_vm._v("去使用")])
-                  ])
-                ]
-              )
+                    _c("view", { staticClass: "unit" }, [_vm._v("元")])
+                  ]),
+                  row.minimumAmount !== 0
+                    ? _c("view", { staticClass: "criteria" }, [
+                        _vm._v("满" + _vm._s(row.minimumAmount) + "使用")
+                      ])
+                    : _vm._e(),
+                  row.minimumAmount === 0
+                    ? _c("view", { staticClass: "criteria" }, [
+                        _vm._v("无门槛")
+                      ])
+                    : _vm._e(),
+                  _c("view", { staticClass: "use2" }, [_vm._v("已使用")])
+                ])
+              ])
             ])
           })
         ],
@@ -482,74 +460,40 @@ var render = function() {
             : _vm._e(),
           _vm._l(_vm.couponinvalidList, function(row, index) {
             return _c("view", { key: index, staticClass: "row" }, [
-              _c(
-                "view",
-                {
-                  staticClass: "menu",
-                  attrs: { eventid: "74e2203b-4-" + index },
-                  on: {
-                    tap: function($event) {
-                      $event.stopPropagation()
-                      _vm.deleteCoupon(row.id, _vm.couponinvalidList)
-                    }
-                  }
-                },
-                [_c("view", { staticClass: "icon shanchu" })]
-              ),
-              _c(
-                "view",
-                {
-                  staticClass: "carrier",
-                  class: [
-                    _vm.typeClass == "invalid"
-                      ? _vm.theIndex == index
-                        ? "open"
-                        : _vm.oldIndex == index
-                        ? "close"
-                        : ""
-                      : ""
-                  ],
-                  attrs: { eventid: "74e2203b-5-" + index },
-                  on: {
-                    touchstart: function($event) {
-                      _vm.touchStart(index, $event)
-                    },
-                    touchmove: function($event) {
-                      _vm.touchMove(index, $event)
-                    },
-                    touchend: function($event) {
-                      _vm.touchEnd(index, $event)
-                    }
-                  }
-                },
-                [
-                  _c("view", { staticClass: "left" }, [
-                    _c("view", { staticClass: "title" }, [
-                      _vm._v(_vm._s(row.title))
-                    ]),
-                    _c("view", { staticClass: "term" }, [
-                      _vm._v(
-                        _vm._s(row.termStart) + " ~ " + _vm._s(row.termEnd)
-                      )
-                    ]),
-                    _c("view", { staticClass: "icon shixiao" }),
-                    _c("view", { staticClass: "gap-top" }),
-                    _c("view", { staticClass: "gap-bottom" })
+              _c("view", { staticClass: "carrier" }, [
+                _c("view", { staticClass: "left" }, [
+                  _c("view", { staticClass: "title" }, [
+                    _vm._v(_vm._s(row.couponsName))
                   ]),
-                  _c("view", { staticClass: "right invalid" }, [
-                    _c("view", { staticClass: "ticket" }, [
-                      _c("view", { staticClass: "num" }, [
-                        _vm._v(_vm._s(row.ticket))
-                      ]),
-                      _c("view", { staticClass: "unit" }, [_vm._v("元")])
+                  _c("view", { staticClass: "term" }, [
+                    _vm._v(
+                      _vm._s(row.effectiveDate) + " ~ " + _vm._s(row.expiryDate)
+                    )
+                  ]),
+                  _c("view", { staticClass: "icon shixiao" }),
+                  _c("view", { staticClass: "gap-top" }),
+                  _c("view", { staticClass: "gap-bottom" })
+                ]),
+                _c("view", { staticClass: "right invalid" }, [
+                  _c("view", { staticClass: "ticket" }, [
+                    _c("view", { staticClass: "num" }, [
+                      _vm._v(_vm._s(row.couponsAmount))
                     ]),
-                    _c("view", { staticClass: "criteria" }, [
-                      _vm._v(_vm._s(row.criteria))
-                    ]),
-                    _c("view", { staticClass: "use" }, [_vm._v("去查看")])
-                  ])
-                ]
-              )
+                    _c("view", { staticClass: "unit" }, [_vm._v("元")])
+                  ]),
+                  row.minimumAmount !== 0
+                    ? _c("view", { staticClass: "criteria" }, [
+                        _vm._v("满" + _vm._s(row.minimumAmount) + "使用")
+                      ])
+                    : _vm._e(),
+                  row.minimumAmount === 0
+                    ? _c("view", { staticClass: "criteria" }, [
+                        _vm._v("无门槛")
+                      ])
+                    : _vm._e(),
+                  _c("view", { staticClass: "use2" }, [_vm._v("已过期")])
+                ])
+              ])
             ])
           })
         ],

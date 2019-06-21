@@ -349,6 +349,18 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 var _uniIcon = _interopRequireDefault(__webpack_require__(/*! @/components/uni-icon/uni-icon.vue */ "../../../../Users/64165/Desktop/桶装水/tongzhuangshui_h5/components/uni-icon/uni-icon.vue"));
 var _uniPopup = _interopRequireDefault(__webpack_require__(/*! @/components/uni-popup/uni-popup.vue */ "../../../../Users/64165/Desktop/桶装水/tongzhuangshui_h5/components/uni-popup/uni-popup.vue"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
 {
@@ -361,6 +373,7 @@ var _uniPopup = _interopRequireDefault(__webpack_require__(/*! @/components/uni-
       flag: true,
       type: '',
       addrMain: {},
+      myAddrMain: {},
       items: [],
       sumPrice: '0.00',
       headerPosition: 'fixed',
@@ -382,30 +395,21 @@ var _uniPopup = _interopRequireDefault(__webpack_require__(/*! @/components/uni-
     this.statusTop = e.scrollTop >= 0 ? null : -this.statusHeight + 'px';
   },
   //下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 "enablePullDownRefresh": true
-  onPullDownRefresh: function onPullDownRefresh() {var _this = this;
+  onPullDownRefresh: function onPullDownRefresh() {
 
-    uni.getLocation({
-      type: 'wgs84',
-      success: function success(res) {
-        console.log('当前位置的经度：' + res.longitude);
-        console.log('当前位置的纬度：' + res.latitude);
-        _this.temp(res);
-      } });
-
+    this.reFlash();
 
     setTimeout(function () {
       uni.stopPullDownRefresh();
     }, 1000);
   },
-  onLoad: function onLoad() {var _this2 = this;
+  onShow: function onShow() {
 
-    uni.getLocation({
-      type: 'wgs84',
-      success: function success(res) {
-        console.log('当前位置的经度：' + res.longitude);
-        console.log('当前位置的纬度：' + res.latitude);
-        _this2.temp(res);
-      } });
+    //页面显示时，加载我选择的地址
+    this.reFlash();
+
+  },
+  onLoad: function onLoad() {
 
     uni.login({
       provider: 'weixin',
@@ -422,28 +426,15 @@ var _uniPopup = _interopRequireDefault(__webpack_require__(/*! @/components/uni-
 
           method: 'GET',
           success: function success(res) {
-            console.log('热openId');
-            console.log(res.data);
-            console.log(res.data.openid);
-            // console.log(res.data);
-            // alert(res.data);
             uni.setStorageSync('openId', res.data.openid);
             uni.request({
               url: 'https://tzs.yuanfudashi.com/user/insert?wechatOpenid=' + uni.getStorageSync('openId'),
-              // data: {
-              // 	wechatOpenid: uni.getStorageSync('openId')
-              // },
               method: 'POST',
               success: function success(res) {} });
 
           } });
 
       } });
-
-
-
-
-
 
 
 
@@ -496,7 +487,47 @@ var _uniPopup = _interopRequireDefault(__webpack_require__(/*! @/components/uni-
     }
   },
   methods: {
-    temp: function temp(res) {var _this3 = this;
+    reFlash: function reFlash() {var _this = this;
+      uni.getStorage({
+        key: 'confirmAddr',
+        success: function success(ret) {
+          if (_this.myAddrMain.address != ret.data.address) {
+            console.log('地址已更换');
+            _this.myAddrMain = ret.data;
+            // console.log(ret.data.id);
+            //根据我选择的位置加载附近店铺
+            _this.loadShopList(ret.data);
+          }
+        },
+        fail: function fail() {
+          _this.myAddrMain = { address: '点击选择地址' };
+          console.log(_this.myAddrMain);
+          uni.getLocation({
+            type: 'wgs84',
+            success: function success(res) {
+              console.log('当前位置的经度：' + res.longitude);
+              console.log('当前位置的纬度：' + res.latitude);
+              _this.loadShopList(res);
+              uni.request({
+                url: _this.$tempUrl + 'common/geocoderByLocation',
+                method: 'GET',
+                data: { lat: res.latitude, lng: res.longitude },
+                success: function success(res) {
+                  // console.log(res.data.result.address);
+                  _this.myAddrMain = { address: res.data.result.address_component.street_number };
+                } });
+
+            } });
+
+        } });
+
+    },
+    toAddress: function toAddress() {
+      uni.navigateTo({
+        url: '../address/address' });
+
+    },
+    loadShopList: function loadShopList(res) {var _this2 = this;
       uni.showLoading({ title: '加载中' });
       uni.request({
         url: this.$tempUrl + 'shop/listByAddress',
@@ -504,64 +535,59 @@ var _uniPopup = _interopRequireDefault(__webpack_require__(/*! @/components/uni-
         data: {
           longitude: res.longitude,
           latitude: res.latitude,
-          distance: 3000 },
+          distance: 2500 },
 
         success: function success(res) {
           if (res.data.data.length === 0) {
-            // uni.showModal({
-            // 	title: '啊哦，加载失败',
-            // 	content: '您附近暂无入驻商家哦>.<#，快去通知送水工入驻吧',
-            // 	showCancel: false,
-            // 	success: res => {
-            // 		if (res.confirm) {
-            // 			console.log('用户点击确定');
-            // 			// uni.reLaunch({
-            // 			// 	url: '../tabBar/cart'
-            // 			// });
-            // 		} else if (res.cancel) {
-            // 			console.log('用户点击取消');
-            // 		}
-            // 	}
-            // });
-            // uni.showToast({ title: '啊哦，您附近暂无入驻商家>.<# 将为您显示所有商家列表', icon: 'none' });
-            uni.request({
-              url: _this3.$tempUrl + 'shop/list',
-              method: 'GET',
+            uni.hideLoading();
+            _this2.addrMain = {};
+            _this2.goodsList = [];
+            uni.showModal({
+              title: '啊哦，加载失败',
+              content: '您附近暂无入驻商家哦，去更换一个新地址吧～',
+              // showCancel: false,
               success: function success(res) {
-                // console.log(res.data.data);
-                _this3.items = res.data.data;
-                _this3.addrMain = _this3.items[0];
-                uni.request({
-                  url: _this3.$tempUrl + 'product/list',
-                  data: { shopId: _this3.items[0].id },
-                  method: 'GET',
-                  success: function success(res) {
-                    uni.hideLoading();
-                    // console.log(res.data.data);
-                    _this3.goodsList = res.data.data;
-                    if (res.data.data.length === 0) {
-                      uni.showToast({ title: '啊哦，此商家还未上架商品，换家点吧>.<#', icon: 'none' });
-                    }
-                  } });
+                if (res.confirm) {
+                  console.log('用户点击确定2');
+                  uni.navigateTo({
+                    url: '../address/address' });
 
-              } });
+                } else if (res.cancel) {
+                  console.log('用户点击取消');
+                  uni.switchTab({
+                    url: 'user' });
 
-          } else {
-            _this3.items = res.data.data;
-            _this3.addrMain = _this3.items[0];
-            uni.request({
-              url: _this3.$tempUrl + 'product/list',
-              data: { shopId: _this3.items[0].id },
-              method: 'GET',
-              success: function success(res) {
-                uni.hideLoading();
-                // console.log(res.data.data);
-                _this3.goodsList = res.data.data;
-                if (res.data.data.length === 0) {
-                  uni.showToast({ title: '啊哦，此商家还未上架商品，换家点吧>.<#', icon: 'none' });
                 }
               } });
 
+            // uni.request({
+            // 	url: this.$tempUrl + 'shop/list',
+            // 	method: 'GET',
+            // 	success: res => {
+            // 		// console.log(res.data.data);
+            // 		this.loadProduct(res);
+            // 	}
+            // });
+          } else {
+            uni.showToast({ title: '商铺加载完毕', icon: 'success' });
+            _this2.loadProduct(res);
+          }
+        } });
+
+    },
+    loadProduct: function loadProduct(_res) {var _this3 = this;
+      this.items = _res.data.data;
+      this.addrMain = this.items[0];
+      uni.request({
+        url: this.$tempUrl + 'product/list',
+        data: { shopId: this.items[0].id },
+        method: 'GET',
+        success: function success(res) {
+          uni.hideLoading();
+          // console.log(res.data.data);
+          _this3.goodsList = res.data.data;
+          if (res.data.data.length === 0) {
+            uni.showToast({ title: '啊哦，此商家还未上架商品，换家点吧>.<#', icon: 'none' });
           }
         } });
 
@@ -934,10 +960,33 @@ var render = function() {
           ])
         })
       ),
-      _c("view", {
-        staticClass: "status",
-        style: { position: _vm.headerPosition, top: _vm.statusTop }
-      }),
+      _c(
+        "view",
+        {
+          staticClass: "status",
+          style: { position: _vm.headerPosition, top: _vm.statusTop },
+          attrs: { eventid: "7f5c5701-2" },
+          on: { tap: _vm.toAddress }
+        },
+        [
+          _c("label", { staticStyle: { "padding-left": "20rpx" } }),
+          _c("uni-icon", {
+            attrs: {
+              type: "location-filled",
+              color: "#FFB800",
+              size: "16",
+              mpcomid: "7f5c5701-1"
+            }
+          }),
+          _c(
+            "label",
+            { staticStyle: { "font-size": "30rpx", padding: "0 5rpx" } },
+            [_vm._v(_vm._s(_vm.myAddrMain.address))]
+          ),
+          _c("label", { staticStyle: { "font-size": "20rpx" } }, [_vm._v(">")])
+        ],
+        1
+      ),
       _c(
         "view",
         {
@@ -945,61 +994,63 @@ var render = function() {
           style: { position: _vm.headerPosition, top: _vm.headerTop }
         },
         [
-          _c("view", { staticClass: "main" }, [
-            _c("view", { staticClass: "left" }, [
-              _vm._m(0),
-              _c("view", [
-                _c("view", { staticClass: "tel-name" }, [
-                  _c("view", { staticClass: "name" }, [
-                    _vm._v(_vm._s(_vm.addrMain.name))
-                  ]),
-                  _c(
-                    "view",
-                    {
-                      staticClass: "tel",
-                      attrs: { eventid: "7f5c5701-2" },
-                      on: {
-                        tap: function($event) {
-                          _vm.toCall(_vm.addrMain.contact)
-                        }
-                      }
-                    },
-                    [
-                      _vm._v(_vm._s(_vm.addrMain.contact)),
-                      _c("uni-icon", {
-                        staticClass: "phone-icon",
-                        attrs: {
-                          type: "phone-filled",
-                          color: "#f06c7a",
-                          size: "18",
-                          mpcomid: "7f5c5701-1"
-                        }
-                      })
-                    ],
-                    1
-                  )
+          _vm.addrMain.name
+            ? _c("view", { staticClass: "main" }, [
+                _c("view", { staticClass: "left" }, [
+                  _vm._m(0),
+                  _c("view", [
+                    _c("view", { staticClass: "tel-name" }, [
+                      _c("view", { staticClass: "name" }, [
+                        _vm._v(_vm._s(_vm.addrMain.name))
+                      ]),
+                      _c(
+                        "view",
+                        {
+                          staticClass: "tel",
+                          attrs: { eventid: "7f5c5701-3" },
+                          on: {
+                            tap: function($event) {
+                              _vm.toCall(_vm.addrMain.contact)
+                            }
+                          }
+                        },
+                        [
+                          _vm._v(_vm._s(_vm.addrMain.contact)),
+                          _c("uni-icon", {
+                            staticClass: "phone-icon",
+                            attrs: {
+                              type: "phone-filled",
+                              color: "#f06c7a",
+                              size: "18",
+                              mpcomid: "7f5c5701-2"
+                            }
+                          })
+                        ],
+                        1
+                      )
+                    ]),
+                    _c("view", { staticClass: "addres" }, [
+                      _vm._v(_vm._s(_vm.addrMain.address))
+                    ])
+                  ])
                 ]),
-                _c("view", { staticClass: "addres" }, [
-                  _vm._v(_vm._s(_vm.addrMain.address))
-                ])
+                _vm.items.length > 1
+                  ? _c(
+                      "view",
+                      {
+                        staticClass: "btn",
+                        attrs: { eventid: "7f5c5701-4" },
+                        on: {
+                          tap: function($event) {
+                            _vm.togglePopup("middle-list")
+                          }
+                        }
+                      },
+                      [_vm._v("更换")]
+                    )
+                  : _vm._e()
               ])
-            ]),
-            _vm.items.length > 1
-              ? _c(
-                  "view",
-                  {
-                    staticClass: "btn",
-                    attrs: { eventid: "7f5c5701-3" },
-                    on: {
-                      tap: function($event) {
-                        _vm.togglePopup("middle-list")
-                      }
-                    }
-                  },
-                  [_vm._v("更换")]
-                )
-              : _vm._e()
-          ])
+            : _vm._e()
         ]
       ),
       _c("view", { staticClass: "place" }),
@@ -1032,7 +1083,7 @@ var render = function() {
                 "view",
                 {
                   staticClass: "menu",
-                  attrs: { eventid: "7f5c5701-4-" + index },
+                  attrs: { eventid: "7f5c5701-5-" + index },
                   on: {
                     tap: function($event) {
                       $event.stopPropagation()
@@ -1053,7 +1104,7 @@ var render = function() {
                       ? "close"
                       : ""
                   ],
-                  attrs: { eventid: "7f5c5701-10-" + index },
+                  attrs: { eventid: "7f5c5701-11-" + index },
                   on: {
                     touchstart: function($event) {
                       _vm.touchStart(index, $event)
@@ -1079,7 +1130,7 @@ var render = function() {
                     "view",
                     {
                       staticClass: "goods-info",
-                      attrs: { eventid: "7f5c5701-9-" + index },
+                      attrs: { eventid: "7f5c5701-10-" + index },
                       on: {
                         tap: function($event) {
                           _vm.toGoods(row)
@@ -1106,7 +1157,7 @@ var render = function() {
                               "view",
                               {
                                 staticClass: "sub",
-                                attrs: { eventid: "7f5c5701-5-" + index },
+                                attrs: { eventid: "7f5c5701-6-" + index },
                                 on: {
                                   tap: function($event) {
                                     $event.stopPropagation()
@@ -1120,7 +1171,7 @@ var render = function() {
                               "view",
                               {
                                 staticClass: "input",
-                                attrs: { eventid: "7f5c5701-7-" + index },
+                                attrs: { eventid: "7f5c5701-8-" + index },
                                 on: {
                                   tap: function($event) {
                                     $event.stopPropagation()
@@ -1140,7 +1191,7 @@ var render = function() {
                                   ],
                                   attrs: {
                                     type: "number",
-                                    eventid: "7f5c5701-6-" + index
+                                    eventid: "7f5c5701-7-" + index
                                   },
                                   domProps: { value: row.stock },
                                   on: {
@@ -1161,7 +1212,7 @@ var render = function() {
                               "view",
                               {
                                 staticClass: "add",
-                                attrs: { eventid: "7f5c5701-8-" + index },
+                                attrs: { eventid: "7f5c5701-9-" + index },
                                 on: {
                                   tap: function($event) {
                                     $event.stopPropagation()
@@ -1188,7 +1239,7 @@ var render = function() {
           "view",
           {
             staticClass: "checkbox-box",
-            attrs: { eventid: "7f5c5701-11" },
+            attrs: { eventid: "7f5c5701-12" },
             on: { tap: _vm.allSelect }
           },
           [
@@ -1203,7 +1254,7 @@ var render = function() {
               "view",
               {
                 staticClass: "delBtn",
-                attrs: { eventid: "7f5c5701-12" },
+                attrs: { eventid: "7f5c5701-13" },
                 on: { tap: _vm.deleteList }
               },
               [_vm._v("删除")]
@@ -1220,7 +1271,7 @@ var render = function() {
             "view",
             {
               staticClass: "btn",
-              attrs: { eventid: "7f5c5701-13" },
+              attrs: { eventid: "7f5c5701-14" },
               on: { tap: _vm.toConfirmation }
             },
             [_vm._v("结算(" + _vm._s(_vm.selectedList.length) + ")")]

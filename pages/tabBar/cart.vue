@@ -18,10 +18,22 @@
 				</view>
 			</view>
 		</uni-popup>
-		<view class="status" :style="{ position: headerPosition, top: statusTop }"></view>
+		<view class="status" :style="{ position: headerPosition, top: statusTop }" @tap="toAddress">
+			<label style="padding-left: 20upx;"></label>
+			<uni-icon type="location-filled" color="#FFB800" size="16"></uni-icon>
+			<label style="font-size: 30upx;padding: 0 5upx;">{{ myAddrMain.address }}</label>
+			<label style="font-size: 20upx;">></label>
+		</view>
+		<!-- <view class="title" @tap="toAddress">
+			<view>
+				<uni-icon type="location-filled" color="#FFB800" size="16"></uni-icon>
+				<label style="font-size: 30upx;padding: 0 5upx;">{{ myAddrMain.address }}</label>
+				<label style="font-size: 20upx;">></label>
+			</view>
+		</view> -->
 		<view class="header" :style="{ position: headerPosition, top: headerTop }">
 			<!-- 商家地址 -->
-			<view class="main">
+			<view class="main" v-if="addrMain.name">
 				<view class="left">
 					<view class="icon"><image src="../../static/img/log.png" mode=""></image></view>
 					<view>
@@ -115,6 +127,7 @@ export default {
 			flag: true,
 			type: '',
 			addrMain: {},
+			myAddrMain: {},
 			items: [],
 			sumPrice: '0.00',
 			headerPosition: 'fixed',
@@ -138,29 +151,20 @@ export default {
 	//下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 "enablePullDownRefresh": true
 	onPullDownRefresh() {
 		// #ifdef MP-WEIXIN
-		uni.getLocation({
-			type: 'wgs84',
-			success: res => {
-				console.log('当前位置的经度：' + res.longitude);
-				console.log('当前位置的纬度：' + res.latitude);
-				this.temp(res);
-			}
-		});
+		this.reFlash();
 		// #endif
 		setTimeout(function() {
 			uni.stopPullDownRefresh();
 		}, 1000);
 	},
+	onShow() {
+		// #ifdef MP-WEIXIN
+		//页面显示时，加载我选择的地址
+		this.reFlash();
+		// #endif
+	},
 	onLoad() {
 		// #ifdef MP-WEIXIN
-		uni.getLocation({
-			type: 'wgs84',
-			success: res => {
-				console.log('当前位置的经度：' + res.longitude);
-				console.log('当前位置的纬度：' + res.latitude);
-				this.temp(res);
-			}
-		});
 		uni.login({
 			provider: 'weixin',
 			success: function(loginRes) {
@@ -176,17 +180,9 @@ export default {
 					},
 					method: 'GET',
 					success: res => {
-						console.log('热openId');
-						console.log(res.data);
-						console.log(res.data.openid);
-						// console.log(res.data);
-						// alert(res.data);
 						uni.setStorageSync('openId', res.data.openid);
 						uni.request({
 							url: 'https://tzs.yuanfudashi.com/user/insert?wechatOpenid=' + uni.getStorageSync('openId'),
-							// data: {
-							// 	wechatOpenid: uni.getStorageSync('openId')
-							// },
 							method: 'POST',
 							success: res => {}
 						});
@@ -203,14 +199,9 @@ export default {
 			},
 			method: 'GET',
 			success: res => {
-				// console.log(res.data);
-				// alert(res.data);
 				uni.setStorageSync('openId', res.data);
 				uni.request({
 					url: this.$tempUrl + 'user/insert?wechatOpenid=' + uni.getStorageSync('openId'),
-					// data: {
-					// 	wechatOpenid: uni.getStorageSync('openId')
-					// },
 					method: 'POST',
 					success: res => {}
 				});
@@ -250,7 +241,47 @@ export default {
 		}
 	},
 	methods: {
-		temp(res) {
+		reFlash() {
+			uni.getStorage({
+				key: 'confirmAddr',
+				success: ret => {
+					if (this.myAddrMain.address != ret.data.address) {
+						console.log('地址已更换');
+						this.myAddrMain = ret.data;
+						// console.log(ret.data.id);
+						//根据我选择的位置加载附近店铺
+						this.loadShopList(ret.data);
+					}
+				},
+				fail: () => {
+					this.myAddrMain = { address: '点击选择地址' };
+					console.log(this.myAddrMain);
+					uni.getLocation({
+						type: 'wgs84',
+						success: res => {
+							console.log('当前位置的经度：' + res.longitude);
+							console.log('当前位置的纬度：' + res.latitude);
+							this.loadShopList(res);
+							uni.request({
+								url: this.$tempUrl + 'common/geocoderByLocation',
+								method: 'GET',
+								data: { lat: res.latitude, lng: res.longitude },
+								success: res => {
+									// console.log(res.data.result.address);
+									this.myAddrMain = { address: res.data.result.address_component.street_number };
+								}
+							});
+						}
+					});
+				}
+			});
+		},
+		toAddress() {
+			uni.navigateTo({
+				url: '../address/address'
+			});
+		},
+		loadShopList(res) {
 			uni.showLoading({ title: '加载中' });
 			uni.request({
 				url: this.$tempUrl + 'shop/listByAddress',
@@ -258,64 +289,59 @@ export default {
 				data: {
 					longitude: res.longitude,
 					latitude: res.latitude,
-					distance: 3000
+					distance: 2500
 				},
 				success: res => {
 					if (res.data.data.length === 0) {
-						// uni.showModal({
-						// 	title: '啊哦，加载失败',
-						// 	content: '您附近暂无入驻商家哦>.<#，快去通知送水工入驻吧',
-						// 	showCancel: false,
-						// 	success: res => {
-						// 		if (res.confirm) {
-						// 			console.log('用户点击确定');
-						// 			// uni.reLaunch({
-						// 			// 	url: '../tabBar/cart'
-						// 			// });
-						// 		} else if (res.cancel) {
-						// 			console.log('用户点击取消');
-						// 		}
-						// 	}
-						// });
-						// uni.showToast({ title: '啊哦，您附近暂无入驻商家>.<# 将为您显示所有商家列表', icon: 'none' });
-						uni.request({
-							url: this.$tempUrl + 'shop/list',
-							method: 'GET',
+						uni.hideLoading();
+						this.addrMain = {};
+						this.goodsList = [];
+						uni.showModal({
+							title: '啊哦，加载失败',
+							content: '您附近暂无入驻商家哦，去更换一个新地址吧～',
+							// showCancel: false,
 							success: res => {
-								// console.log(res.data.data);
-								this.items = res.data.data;
-								this.addrMain = this.items[0];
-								uni.request({
-									url: this.$tempUrl + 'product/list',
-									data: { shopId: this.items[0].id },
-									method: 'GET',
-									success: res => {
-										uni.hideLoading();
-										// console.log(res.data.data);
-										this.goodsList = res.data.data;
-										if (res.data.data.length === 0) {
-											uni.showToast({ title: '啊哦，此商家还未上架商品，换家点吧>.<#', icon: 'none' });
-										}
-									}
-								});
-							}
-						});
-					} else {
-						this.items = res.data.data;
-						this.addrMain = this.items[0];
-						uni.request({
-							url: this.$tempUrl + 'product/list',
-							data: { shopId: this.items[0].id },
-							method: 'GET',
-							success: res => {
-								uni.hideLoading();
-								// console.log(res.data.data);
-								this.goodsList = res.data.data;
-								if (res.data.data.length === 0) {
-									uni.showToast({ title: '啊哦，此商家还未上架商品，换家点吧>.<#', icon: 'none' });
+								if (res.confirm) {
+									console.log('用户点击确定2');
+									uni.navigateTo({
+										url: '../address/address'
+									});
+								} else if (res.cancel) {
+									console.log('用户点击取消');
+									uni.switchTab({
+										url: 'user'
+									});
 								}
 							}
 						});
+						// uni.request({
+						// 	url: this.$tempUrl + 'shop/list',
+						// 	method: 'GET',
+						// 	success: res => {
+						// 		// console.log(res.data.data);
+						// 		this.loadProduct(res);
+						// 	}
+						// });
+					} else {
+						uni.showToast({ title: '商铺加载完毕', icon: 'success' });
+						this.loadProduct(res);
+					}
+				}
+			});
+		},
+		loadProduct(_res) {
+			this.items = _res.data.data;
+			this.addrMain = this.items[0];
+			uni.request({
+				url: this.$tempUrl + 'product/list',
+				data: { shopId: this.items[0].id },
+				method: 'GET',
+				success: res => {
+					uni.hideLoading();
+					// console.log(res.data.data);
+					this.goodsList = res.data.data;
+					if (res.data.data.length === 0) {
+						uni.showToast({ title: '啊哦，此商家还未上架商品，换家点吧>.<#', icon: 'none' });
 					}
 				}
 			});
@@ -592,7 +618,7 @@ page {
 .main {
 	background-color: white;
 	width: 100%;
-	padding: 16upx 3%;
+	padding: 50upx 3%;
 	margin: 60upx auto 20upx auto;
 	box-shadow: 0upx 5upx 20upx rgba(0, 0, 0, 0.1);
 	border-radius: 20upx;
@@ -691,23 +717,23 @@ page {
 }
 .status {
 	width: 100%;
-	height: 0;
+	height: 50upx;
 	position: fixed;
-	z-index: 10;
+	z-index: 11;
 	background-color: #fff;
 	top: 0;
 	/*  #ifdef  APP-PLUS  */
 	height: var(--status-bar-height); //覆盖样式
 	/*  #endif  */
 }
-
 .header {
-	width: 92%;
+	width: 87%;
 	padding: 0 4%;
-	height: 100upx;
+	height: 140upx;
 	display: flex;
 	align-items: center;
 	position: fixed;
+	flex-direction: column;
 	top: 0;
 	z-index: 10;
 	background-color: #fff;
@@ -720,7 +746,7 @@ page {
 }
 .place {
 	background-color: #ffffff;
-	height: 100upx;
+	height: 140upx;
 	/*  #ifdef  APP-PLUS  */
 	margin-top: var(--status-bar-height);
 	/*  #endif  */

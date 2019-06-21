@@ -123,7 +123,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var _inputs = _interopRequireDefault(__webpack_require__(/*! @/components/QuShe-inputs/inputs.vue */ "../../../../Users/64165/Desktop/桶装水/tongzhuangshui_h5/components/QuShe-inputs/inputs.vue"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
+var _inputs = _interopRequireDefault(__webpack_require__(/*! @/components/QuShe-inputs/inputs.vue */ "../../../../Users/64165/Desktop/桶装水/tongzhuangshui_h5/components/QuShe-inputs/inputs.vue"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var _default =
 {
   data: function data() {
     return {
@@ -168,7 +168,21 @@ var _inputs = _interopRequireDefault(__webpack_require__(/*! @/components/QuShe-
         tapClear: true, //input一键清除功能
         iconColor: '#f06c7a', //input图标颜色
         variableName: 'shopAddress' //自定义变量名
-      },
+      }, _defineProperty({
+
+        type: 'pics',
+        title: '营业执照',
+        itemArray: [
+        {
+          title: '营业执照'
+          // ,ignore: true
+        }],
+
+        variableName: 'pic',
+        clearColor: '#c0ebd7' }, "variableName",
+
+      'picture'),
+
       {
         title: '经营人',
         variableName: 'sellerName' //自定义变量名

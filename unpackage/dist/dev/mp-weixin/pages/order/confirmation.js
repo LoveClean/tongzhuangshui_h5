@@ -214,7 +214,7 @@ var _uniPopup = _interopRequireDefault(__webpack_require__(/*! @/components/uni-
       success: function success(ret) {
         // console.log(ret.data);
         _this.coupon = ret.data;
-        _this.deduction = ret.data.ticket;
+        _this.deduction = ret.data.couponsAmount;
         // console.log(this.deduction);
       } });
 
@@ -223,6 +223,10 @@ var _uniPopup = _interopRequireDefault(__webpack_require__(/*! @/components/uni-
       key: 'confirmAddr',
       success: function success(ret) {
         _this.addrMain = ret.data;
+        // console.log(ret.data.id);
+      },
+      fail: function fail() {
+        _this.addrMain = { contactName: '点击选择地址' };
       } });
 
     //页面显示时，加载订单信息
@@ -310,18 +314,27 @@ var _uniPopup = _interopRequireDefault(__webpack_require__(/*! @/components/uni-
             remark: this.note,
             shopId: uni.getStorageSync('shopId'),
             userAddress: this.addrMain.address,
+            userCouponsId: this.coupon.userCouponsId,
             userName: this.addrMain.contactName,
             userPhone: this.addrMain.contactPhone,
             userWechatOpenid: uni.getStorageSync('openId') },
 
           success: function success(res) {
-            uni.showLoading({
-              title: '提交中...' });
+            if (res.data.code === 2) {
+              uni.showModal({
+                title: '失败',
+                content: res.data.message,
+                showCancel: false });
 
-            setTimeout(function () {
-              uni.hideLoading();
-              _this2.payment(res.data.data.id);
-            }, 500);
+            } else {
+              uni.showLoading({
+                title: '提交中...' });
+
+              setTimeout(function () {
+                uni.hideLoading();
+                _this2.payment(res.data.data.id);
+              }, 500);
+            }
           } });
 
       } else {
@@ -384,7 +397,7 @@ var _uniPopup = _interopRequireDefault(__webpack_require__(/*! @/components/uni-
     },
     toCoupon: function toCoupon(goodsPrice) {
       uni.navigateTo({
-        url: '../user/coupon/coupon?goodsPrice=' + goodsPrice });
+        url: 'orderCoupon?goodsPrice=' + goodsPrice });
 
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["default"]))
@@ -483,65 +496,69 @@ var render = function() {
       })
     ),
     _c("view", { staticClass: "order" }, [
-      _c("view", { staticClass: "row" }, [
-        _c("view", { staticClass: "left" }, [_vm._v("优惠券 :")]),
-        _c(
-          "view",
-          {
-            staticClass: "right",
-            attrs: { eventid: "abfeaab4-1" },
-            on: {
-              tap: function($event) {
-                _vm.toCoupon(_vm.goodsPrice)
-              }
+      _c(
+        "view",
+        {
+          staticClass: "row",
+          attrs: { eventid: "abfeaab4-1" },
+          on: {
+            tap: function($event) {
+              _vm.toCoupon(_vm.goodsPrice)
             }
-          },
-          [
-            _c(
-              "label",
-              {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: !_vm.coupon.ticket,
-                    expression: "!coupon.ticket"
-                  }
+          }
+        },
+        [
+          _c("view", { staticClass: "left" }, [_vm._v("优惠券 :")]),
+          _c(
+            "view",
+            { staticClass: "right" },
+            [
+              _c(
+                "label",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: !_vm.coupon.couponsAmount,
+                      expression: "!coupon.couponsAmount"
+                    }
+                  ]
+                },
+                [_vm._v("点击选择")]
+              ),
+              _c(
+                "label",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.coupon.couponsAmount,
+                      expression: "coupon.couponsAmount"
+                    }
+                  ]
+                },
+                [
+                  _vm._v(
+                    "已选择" +
+                      _vm._s(_vm.coupon.couponsName) +
+                      "，优惠￥" +
+                      _vm._s(_vm.coupon.couponsAmount)
+                  )
                 ]
-              },
-              [_vm._v("点击选择")]
-            ),
-            _c(
-              "label",
-              {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: _vm.coupon.ticket,
-                    expression: "coupon.ticket"
-                  }
-                ]
-              },
-              [
-                _vm._v(
-                  "已选择" +
-                    _vm._s(_vm.coupon.title) +
-                    "，优惠￥" +
-                    _vm._s(_vm.coupon.ticket)
-                )
-              ]
-            ),
-            _c(
-              "label",
-              { staticStyle: { "margin-left": "10rpx", color: "#2F4056" } },
-              [_vm._v(">")]
-            ),
-            _vm._v(">")
-          ],
-          1
-        )
-      ]),
+              ),
+              _c(
+                "label",
+                { staticStyle: { "margin-left": "10rpx", color: "#2F4056" } },
+                [_vm._v(">")]
+              ),
+              _vm._v(">")
+            ],
+            1
+          )
+        ]
+      ),
       _c("view", { staticClass: "row" }, [
         _c("view", { staticClass: "left" }, [_vm._v("备注 :")]),
         _c("view", { staticClass: "right" }, [
@@ -575,7 +592,7 @@ var render = function() {
           _vm._v("￥" + _vm._s(_vm.goodsPrice))
         ])
       ]),
-      _vm.coupon.ticket
+      _vm.coupon.couponsAmount
         ? _c("view", { staticClass: "row" }, [
             _c("view", { staticClass: "nominal" }, [_vm._v("优惠券")]),
             _c("view", { staticClass: "content" }, [

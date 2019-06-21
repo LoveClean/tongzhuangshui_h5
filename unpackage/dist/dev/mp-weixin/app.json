@@ -5,6 +5,7 @@
     "pages/tabBar/seller",
     "pages/tabBar/user",
     "pages/order/confirmation",
+    "pages/order/orderCoupon",
     "pages/address/address",
     "pages/address/addressAdd",
     "pages/address/addressUpd",
@@ -52,5 +53,6 @@
     "scope.userLocation": {
       "desc": "用于为您加载附近的水站"
     }
-  }
+  },
+  "sitemapLocation": "sitemap15.json"
 }

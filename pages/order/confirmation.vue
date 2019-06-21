@@ -30,11 +30,11 @@
 		</view>
 		<!-- 提示-备注 -->
 		<view class="order">
-			<view class="row">
+			<view class="row" @tap="toCoupon(goodsPrice)">
 				<view class="left">优惠券 :</view>
-				<view class="right" @tap="toCoupon(goodsPrice)">
-					<label v-show="!coupon.ticket">点击选择</label>
-					<label v-show="coupon.ticket">已选择{{ coupon.title }}，优惠￥{{ coupon.ticket }}</label>
+				<view class="right">
+					<label v-show="!coupon.couponsAmount">点击选择</label>
+					<label v-show="coupon.couponsAmount">已选择{{ coupon.couponsName }}，优惠￥{{ coupon.couponsAmount }}</label>
 					<!-- <label style="margin-left: 10upx;">></label> -->
 					<label style="margin-left: 10upx;color: #2F4056;">></label>
 					>
@@ -55,7 +55,7 @@
 				<view class="nominal">运费</view>
 				<view class="content">￥+{{ freight }}</view>
 			</view> -->
-			<view class="row" v-if="coupon.ticket">
+			<view class="row" v-if="coupon.couponsAmount">
 				<view class="nominal">优惠券</view>
 				<view class="content">-￥{{ deduction }}</view>
 			</view>
@@ -99,7 +99,7 @@ export default {
 			success: ret => {
 				// console.log(ret.data);
 				this.coupon = ret.data;
-				this.deduction = ret.data.ticket;
+				this.deduction = ret.data.couponsAmount;
 				// console.log(this.deduction);
 			}
 		});
@@ -108,6 +108,10 @@ export default {
 			key: 'confirmAddr',
 			success: ret => {
 				this.addrMain = ret.data;
+				// console.log(ret.data.id);
+			},
+			fail: () => {
+				this.addrMain = { contactName: '点击选择地址' };
 			}
 		});
 		//页面显示时，加载订单信息
@@ -195,18 +199,27 @@ export default {
 						remark: this.note,
 						shopId: uni.getStorageSync('shopId'),
 						userAddress: this.addrMain.address,
+						userCouponsId: this.coupon.userCouponsId,
 						userName: this.addrMain.contactName,
 						userPhone: this.addrMain.contactPhone,
 						userWechatOpenid: uni.getStorageSync('openId')
 					},
 					success: res => {
-						uni.showLoading({
-							title: '提交中...'
-						});
-						setTimeout(() => {
-							uni.hideLoading();
-							this.payment(res.data.data.id);
-						}, 500);
+						if (res.data.code === 2) {
+							uni.showModal({
+								title: '失败',
+								content: res.data.message,
+								showCancel: false
+							});
+						} else {
+							uni.showLoading({
+								title: '提交中...'
+							});
+							setTimeout(() => {
+								uni.hideLoading();
+								this.payment(res.data.data.id);
+							}, 500);
+						}
 					}
 				});
 			} else {
@@ -269,7 +282,7 @@ export default {
 		},
 		toCoupon(goodsPrice) {
 			uni.navigateTo({
-				url: '../user/coupon/coupon?goodsPrice=' + goodsPrice
+				url: 'orderCoupon?goodsPrice=' + goodsPrice
 			});
 		}
 	}
