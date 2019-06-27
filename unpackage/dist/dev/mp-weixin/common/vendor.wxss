@@ -915,11 +915,10 @@ to {
 	        box-sizing: border-box;
 }
 
-
-.pickerBtn.data-v-25071f77{
+.pickerBtn.data-v-25071f77 {
 	font-size: 60%;
 }
-.transition_point6s.data-v-25071f77{
+.transition_point6s.data-v-25071f77 {
 	-webkit-transition: all .6s;
 	-o-transition: all .6s;
 	transition: all .6s;
@@ -929,53 +928,62 @@ to {
 	-o-transition: border-color .6s;
 	transition: border-color .6s;
 }
-view.data-v-25071f77,button.data-v-25071f77,textarea.data-v-25071f77,input.data-v-25071f77,picker.data-v-25071f77,picker-view.data-v-25071f77,picker-view-column.data-v-25071f77,uni-icon.data-v-25071f77,text.data-v-25071f77{
+view.data-v-25071f77,
+button.data-v-25071f77,
+textarea.data-v-25071f77,
+input.data-v-25071f77,
+picker.data-v-25071f77,
+picker-view.data-v-25071f77,
+picker-view-column.data-v-25071f77,
+uni-icon.data-v-25071f77,
+text.data-v-25071f77,
+label.data-v-25071f77 {
 	-webkit-box-sizing: border-box;
 	        box-sizing: border-box;
 }
-button.data-v-25071f77{
+button.data-v-25071f77 {
 	margin: 0;
 }
 button.data-v-25071f77::after {
 	border: none;
 }
-.text_overflow_ellipsis.data-v-25071f77{
-	overflow:hidden;
-	-o-text-overflow:ellipsis;
-	   text-overflow:ellipsis;
-	white-space:nowrap;
+.text_overflow_ellipsis.data-v-25071f77 {
+	overflow: hidden;
+	-o-text-overflow: ellipsis;
+	   text-overflow: ellipsis;
+	white-space: nowrap;
 }
-.overflow_x_hidden.data-v-25071f77{
+.overflow_x_hidden.data-v-25071f77 {
 	overflow-x: hidden;
 }
-.marginRight5.data-v-25071f77{
+.marginRight5.data-v-25071f77 {
 	margin-right: 5%;
 }
-.position_relative.data-v-25071f77{
+.position_relative.data-v-25071f77 {
 	position: relative;
 }
-.position_absolute.data-v-25071f77{
+.position_absolute.data-v-25071f77 {
 	position: absolute;
 }
-.width20.data-v-25071f77{
+.width20.data-v-25071f77 {
 	width: 20%;
 }
-.width30.data-v-25071f77{
+.width30.data-v-25071f77 {
 	width: 30%;
 }
-.width40.data-v-25071f77{
+.width40.data-v-25071f77 {
 	width: 40%;
 }
-.width45.data-v-25071f77{
+.width45.data-v-25071f77 {
 	width: 45%;
 }
-.width55.data-v-25071f77{
+.width55.data-v-25071f77 {
 	width: 55%;
 }
-.width60.data-v-25071f77{
+.width60.data-v-25071f77 {
 	width: 60%;
 }
-.width65.data-v-25071f77{
+.width65.data-v-25071f77 {
 	width: 65%;
 }
 .width75.data-v-25071f77 {
@@ -984,7 +992,7 @@ button.data-v-25071f77::after {
 .width70.data-v-25071f77 {
 	width: 70%;
 }
-.width50.data-v-25071f77{
+.width50.data-v-25071f77 {
 	width: 50%;
 }
 .width25.data-v-25071f77 {
@@ -999,7 +1007,7 @@ button.data-v-25071f77::after {
 .width100.data-v-25071f77 {
 	width: 100%;
 }
-.height100.data-v-25071f77{
+.height100.data-v-25071f77 {
 	height: 100%;
 }
 .word_wrap.data-v-25071f77 {
@@ -1011,17 +1019,17 @@ button.data-v-25071f77::after {
 	    -ms-flex-wrap: wrap;
 	        flex-wrap: wrap;
 }
-.flex-basis50.data-v-25071f77{
+.flex-basis50.data-v-25071f77 {
 	-webkit-flex-basis: 50%;
 	    -ms-flex-preferred-size: 50%;
 	        flex-basis: 50%;
 }
-.flex-shrink0.data-v-25071f77{
+.flex-shrink0.data-v-25071f77 {
 	-webkit-flex-shrink: 0;
 	    -ms-flex-negative: 0;
 	        flex-shrink: 0;
 }
-.flex-shrink1.data-v-25071f77{
+.flex-shrink1.data-v-25071f77 {
 	-webkit-flex-shrink: 1;
 	    -ms-flex-negative: 1;
 	        flex-shrink: 1;
@@ -1176,10 +1184,10 @@ button.data-v-25071f77::after {
 .border1pxf2f2f2.data-v-25071f77 {
 	border: 1px solid #f2f2f2;
 }
-.bacnground_color_f8f8f8.data-v-25071f77{
+.bacnground_color_f8f8f8.data-v-25071f77 {
 	background-color: #f8f8f8;
 }
-.border_radius_4px.data-v-25071f77{
+.border_radius_4px.data-v-25071f77 {
 	-webkit-border-radius: 4px;
 	        border-radius: 4px;
 }
@@ -1208,10 +1216,10 @@ button.data-v-25071f77::after {
 	-webkit-box-sizing: border-box;
 	        box-sizing: border-box;
 }
-.padding8px.data-v-25071f77{
+.padding8px.data-v-25071f77 {
 	padding: 8px;
 }
-.picsClear.data-v-25071f77{
+.picsClear.data-v-25071f77 {
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -1219,11 +1227,10 @@ button.data-v-25071f77::after {
 	    -ms-transform: translate(50%, -50%);
 	        transform: translate(50%, -50%);
 }
-.box_shadow_2px_2px_5px_ADADAD.data-v-25071f77{
+.box_shadow_2px_2px_5px_ADADAD.data-v-25071f77 {
 	-webkit-box-shadow: 2px 2px 5px #ADADAD;
 	        box-shadow: 2px 2px 5px #ADADAD;
 }
-/* 新增 */
 @-webkit-keyframes fadeIn-data-v-25071f77 {
 from {
 		opacity: 0;
@@ -1386,25 +1393,25 @@ to {
 }
 @-webkit-keyframes rotate3d-fade-data-v-25071f77 {
 from {
-		-webkit-transform: rotate3d(10,10,10,360deg);
-		        transform: rotate3d(10,10,10,360deg);
+		-webkit-transform: rotate3d(10, 10, 10, 360deg);
+		        transform: rotate3d(10, 10, 10, 360deg);
 		opacity: 0;
 }
 to {
-		-webkit-transform: rotate3d(10,10,10,0deg);
-		        transform: rotate3d(10,10,10,0deg);
+		-webkit-transform: rotate3d(10, 10, 10, 0deg);
+		        transform: rotate3d(10, 10, 10, 0deg);
 		opacity: 1;
 }
 }
 @keyframes rotate3d-fade-data-v-25071f77 {
 from {
-		-webkit-transform: rotate3d(10,10,10,360deg);
-		        transform: rotate3d(10,10,10,360deg);
+		-webkit-transform: rotate3d(10, 10, 10, 360deg);
+		        transform: rotate3d(10, 10, 10, 360deg);
 		opacity: 0;
 }
 to {
-		-webkit-transform: rotate3d(10,10,10,0deg);
-		        transform: rotate3d(10,10,10,0deg);
+		-webkit-transform: rotate3d(10, 10, 10, 0deg);
+		        transform: rotate3d(10, 10, 10, 0deg);
 		opacity: 1;
 }
 }
@@ -1416,27 +1423,27 @@ to {
 	-webkit-animation: refadeIn-data-v-25071f77;
 	        animation: refadeIn-data-v-25071f77;
 }
-.slide-left.data-v-25071f77{
+.slide-left.data-v-25071f77 {
 	-webkit-animation: slide-left-data-v-25071f77;
 	        animation: slide-left-data-v-25071f77;
 }
-.slide-fade-left.data-v-25071f77{
+.slide-fade-left.data-v-25071f77 {
 	-webkit-animation: slide-fade-left-data-v-25071f77;
 	        animation: slide-fade-left-data-v-25071f77;
 }
-.slide-right.data-v-25071f77{
+.slide-right.data-v-25071f77 {
 	-webkit-animation: slide-right-data-v-25071f77;
 	        animation: slide-right-data-v-25071f77;
 }
-.slide-fade-right.data-v-25071f77{
+.slide-fade-right.data-v-25071f77 {
 	-webkit-animation: slide-fade-right-data-v-25071f77;
 	        animation: slide-fade-right-data-v-25071f77;
 }
-.slide-fade-bottom.data-v-25071f77{
+.slide-fade-bottom.data-v-25071f77 {
 	-webkit-animation: slide-fade-bottom-data-v-25071f77;
 	        animation: slide-fade-bottom-data-v-25071f77;
 }
-.rotate3d-fade.data-v-25071f77{
+.rotate3d-fade.data-v-25071f77 {
 	-webkit-animation: rotate3d-fade-data-v-25071f77;
 	        animation: rotate3d-fade-data-v-25071f77;
 }

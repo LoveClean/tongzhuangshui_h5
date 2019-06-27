@@ -13,6 +13,7 @@
 			:contentSet="contentSet"
 			:buttonStyle="buttonStyle"
 			:inputDebounceSet="inputDebounceSet"
+			@inputsChange="inputsChange"
 		/>
 	</view>
 </template>
@@ -109,6 +110,19 @@ export default {
 		};
 	},
 	methods: {
+		inputsChange(option) {
+			console.log('ffffff');
+			console.log(option);
+			uni.chooseLocation({
+				success: function(res) {
+					console.log('位置名称：' + res.name);
+					console.log('详细地址：' + res.address);
+					console.log('纬度：' + res.latitude);
+					console.log('经度：' + res.longitude);
+					console.log(res);
+				}
+			});
+		},
 		activeFc(res) {
 			const _res = res;
 			uni.showToast({

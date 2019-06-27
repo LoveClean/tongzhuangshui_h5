@@ -1,0 +1,2 @@
+<import src="./sellerApply2.vue.wxml" />
+    <template is="61f7bd98" data="{{ ...$root['0'], $root }}"/>

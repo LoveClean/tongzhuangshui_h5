@@ -200,25 +200,30 @@ __webpack_require__.r(__webpack_exports__);
     addButton: function addButton() {
       console.log('addButton');
       uni.navigateTo({
-        url: 'addressAdd' });
+        url: 'edit' });
 
     },
     editButton: function editButton(row) {
       console.log('editButton');
       uni.navigateTo({
         url:
-        'addressUpd?id=' +
+        'edit?id=' +
         row.id +
         '&contactName=' +
         row.contactName +
         '&contactPhone=' +
         row.contactPhone +
-        '&areaArray=' +
-        row.areaArray +
+        '&areaName=' +
+        row.areaName +
         '&address=' +
         row.address +
+        '&latitude=' +
+        row.latitude +
+        '&longitude=' +
+        row.longitude +
         '&label=' +
-        row.label });
+        row.label +
+        '&type=edit' });
 
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["default"]))
@@ -301,7 +306,7 @@ var render = function() {
                     : _vm._e()
                 ]),
                 _c("view", { staticClass: "address" }, [
-                  _vm._v(_vm._s(row.areaName) + "-" + _vm._s(row.address))
+                  _vm._v(_vm._s(row.areaName) + " " + _vm._s(row.address))
                 ])
               ]
             ),

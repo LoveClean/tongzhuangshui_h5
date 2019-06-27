@@ -85,27 +85,44 @@ var filterTypeObj = { // 内置过滤函数，可根据需求自行添加拓展
     value = value.replace(/[^\d.]/g, ""); //清除“数字”和“.”以外的字符
     value = value.replace(/\.{2,}/g, "."); //只保留第一个. 清除多余的
     value = value.replace(/^(\-)*(\d+)\.(\d).*$/, '$1$2.$3'); //只能输入1个小数 
-    value = value.replace(/^\.(\d).*$/, '.$1'); //只能输入1个小数
     if (value == '') value = null;
-    if (value != '0') value = parseFloat(value);
+    if (value !== '0' && value !== '0.') value = parseFloat(value);
     return value; // 必须return
   } };
 
 
+var eventNames = {
+  inputsChange: 'inputsChange' };
+
+
+var setValueType = {
+  inputsObj: {
+    name: 'inputsObj',
+    itemName: '' },
+
+  focusObj: {
+    name: 'focusObj',
+    itemName: 'focus' } };
+
+
+var filterParamsArrayType = {
+  setInputsValueFc: 'setInputsValueFc' };
+
+
 var interfaces = {
-  upLoadImg: '' // 服务器地址
+  upLoadImg: 'http://tzs.yuanfudashi.com:8091/file/uploadImage' // 服务器地址
 };
 
-var inputsChangeEventName = 'inputsChange';
-
 var _app = {
-  inputsChangeEventName: inputsChangeEventName, // inputs内所有类型变更时的emit事件名称
+  eventNames: eventNames, // inputs内所有类型变更时的emit事件名称
   picker_date_obj: {
     dateTime: dateTime,
     date: date,
     time: time },
 
   pickerChoosedType: pickerChoosedType,
+  setValueType: setValueType,
+  filterParamsArrayType: filterParamsArrayType,
   verifyTypeObj: verifyTypeObj, // 内置正则验证
   filterTypeObj: filterTypeObj, // 内置过滤函数
   showToast: function showToast(msg) {
@@ -137,7 +154,7 @@ var _app = {
       default: //若无判断需求可直接写在这里
         url = interfaces.upLoadImg;
         formData = {};
-        name = '';
+        name = 'file';
         break;}
 
     if (!url) {
@@ -225,12 +242,46 @@ var _app = {
   },
   checkbox_status: function checkbox_status(data) {
     for (var i = 0; i < data.length; i++) {
-      if (data[i] || data[i] === 0) data[i] = true;else data[i] = false;
+      if (data[i] || data[i] === 0) data[i] = true;else
+      data[i] = false;
     }
     return data;
+  },
+  regTest: function regTest(name, val) {
+    return verifyTypeObj[name].reg.test(val);
+  },
+  isNumber: function isNumber(param) {
+    return typeof param === 'number';
+  },
+  filterParams: function filterParams(params, type) {
+    if (params.length === 0)
+    return false;
+    if (params.length > 1) {
+      var arr = getParamsArray(type);
+      var o = {};
+      Object.keys(params).forEach(function (item, index) {
+        o[arr[index]] = params[index];
+      });
+      return o;
+    } else {
+      return params[0];
+    }
   } };var _default =
 
 _app;exports.default = _default;
+
+function getParamsArray(type) {
+  var arr;
+  switch (type) {
+    case filterParamsArrayType.setInputsValueFc:
+      arr = ['param', 'value', 'fail', 'isVariableName'];
+      break;
+    default:
+      arr = [];
+      break;}
+
+  return arr;
+}
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["default"]))
 
 /***/ }),
@@ -15696,7 +15747,7 @@ function initData(vueOptions, context) {
     try {
       data = data.call(context); // 支持 Vue.prototype 上挂的数据
     } catch (e) {
-      if (Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
       }
     }
@@ -22550,6 +22601,7 @@ try {
 
 
 
+
 var _app2 = _interopRequireDefault(__webpack_require__(/*! ./app.js */ "../../../../Users/64165/Desktop/桶装水/tongzhuangshui_h5/components/QuShe-inputs/app.js"));
 var _uniIcon = _interopRequireDefault(__webpack_require__(/*! ./uni-icon.vue */ "../../../../Users/64165/Desktop/桶装水/tongzhuangshui_h5/components/QuShe-inputs/uni-icon.vue"));
 var _pickerDate = _interopRequireDefault(__webpack_require__(/*! ./picker-date.vue */ "../../../../Users/64165/Desktop/桶装水/tongzhuangshui_h5/components/QuShe-inputs/picker-date.vue"));
@@ -22558,7 +22610,6 @@ var _pickerCustom = _interopRequireDefault(__webpack_require__(/*! ./picker-cust
 var _pickerCustom2 = _interopRequireDefault(__webpack_require__(/*! ./picker-custom2.vue */ "../../../../Users/64165/Desktop/桶装水/tongzhuangshui_h5/components/QuShe-inputs/picker-custom2.vue"));
 var _pickerProvincialStreet = _interopRequireDefault(__webpack_require__(/*! ./mpvue-citypicker/picker-provincialStreet.vue */ "../../../../Users/64165/Desktop/桶装水/tongzhuangshui_h5/components/QuShe-inputs/mpvue-citypicker/picker-provincialStreet.vue"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};var ownKeys = Object.keys(source);if (typeof Object.getOwnPropertySymbols === 'function') {ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {return Object.getOwnPropertyDescriptor(source, sym).enumerable;}));}ownKeys.forEach(function (key) {_defineProperty(target, key, source[key]);});}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}function _slicedToArray(arr, i) {return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();}function _nonIterableRest() {throw new TypeError("Invalid attempt to destructure non-iterable instance");}function _iterableToArrayLimit(arr, i) {var _arr = [];var _n = true;var _d = false;var _e = undefined;try {for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {_arr.push(_s.value);if (i && _arr.length === i) break;}} catch (err) {_d = true;_e = err;} finally {try {if (!_n && _i["return"] != null) _i["return"]();} finally {if (_d) throw _e;}}return _arr;}function _arrayWithHoles(arr) {if (Array.isArray(arr)) return arr;}
 
-// const inputsObj = {};
 var debounceName = 'inputdebounce_';
 var debounceTimeName = 'inputdebounce_time_';
 var inputDebounce = {};
@@ -22684,7 +22735,13 @@ var _default2 =
 
     usingComponents: {
       type: Boolean,
-      default: false } },
+      default: false },
+
+    otherSet: {
+      type: Object,
+      default: function _default() {
+        return {};
+      } } },
 
 
   data: function data() {
@@ -22693,9 +22750,10 @@ var _default2 =
     var wH = systemData.screenHeight;
     var wW = systemData.screenWidth;
     var f = this.fontSizeScaleSet;
-    var scale_one = f.titleScale || f.allScale || .018; //title(左边)字体大小系数
-    var scale_two = f.contentScale || f.allScale || .017; //content(右边)字体大小系数
+    var scale_one = f.titleScale || f.allScale || .028; //title(左边)字体大小系数
+    var scale_two = f.contentScale || f.allScale || .028; //contentFontSize(右边)字体大小系数
     return {
+      onReady: false,
       code: '', //本地验证码
       phoneIndex: -1, //记录inputsArray项内属性phone为true的下标，获取验证码时就不用循环判断了
       userCode: '', //用户输入的验证码
@@ -22718,16 +22776,16 @@ var _default2 =
       verifyStatusObj: {}, //校验边框颜色
       classObj: { //拼接页面需用的样式
         segmentationTitle: 'font-size:' + wH * .024 + 'px;padding:' + wH * .015 + 'px ' + wW * .03 + 'px;',
-        titleFs: 'font-size:' + (this.titleSet.size || wH * scale_one) + 'px;',
+        titleFontSize: 'font-size:' + (this.titleSet.size || wW * scale_one) + 'px;',
         titleColor: 'color:' + (this.titleSet.color || '#666666') + ';',
-        content: 'font-size:' + (this.contentSet.size || wH * scale_two) + 'px;',
+        contentFontSize: 'font-size:' + (this.contentSet.size || wW * scale_two) + 'px;',
         contentWidth: 'width:' + (this.titleHide ? this.contentSet.width : '100') + '%;',
         contentsLayout: this.titleHide ? this.contentSet.layout == 'left' ? 'flex_row_none_c' : this.contentSet.layout == 'center' ? 'flex_row_c_c' : 'flex_row_e_c' : 'flex_row_e_c',
         contentLayout: this.contentSet.layout == 'left' ? 'flex_row_none_c' : this.contentSet.layout == 'center' ? 'flex_row_c_c' : 'flex_row_e_c',
         titleLayout: this.titleSet.layout == 'left' ? 'flex_row_none_c' : this.titleSet.layout == 'center' ? 'flex_row_c_c' : 'flex_row_e_c',
         contentsWidth: this.titleHide ? 'width100' : 'width75',
-        contentSize: this.contentSet.size || wH * scale_two, //number
-        iconSize: (this.contentSet.size || wH * scale_two) + 8, //number
+        contentSize: this.contentSet.size || wW * scale_two, //number
+        iconSize: (this.contentSet.size || wW * scale_two) + 8, //number
         padding1_0: 'padding:' + wH * .01 + 'px 0;',
         padding1: 'padding:' + wH * .01 + 'px;',
         paddingPoint5: 'padding:' + wH * .005 + 'px;',
@@ -22747,31 +22805,44 @@ var _default2 =
         changeButton: this.buttonStyle.changeButton || '',
         selectButton: this.buttonStyle.selectButton || '',
         confirmButton: this.buttonStyle.confirmButton || '',
-        getcodeButton: this.buttonStyle.getcodeButton || '' } };
+        getcodeButton: this.buttonStyle.getcodeButton || '',
+        size6wW: wW * .06,
+        size4wW: wW * .04 } };
+
 
 
   },
   watch: {
     'inputsArray': function inputsArray(n, o) {//父级传入的inputsArray改变时自动初始化默认数据
-      // console.log('inputsArray变化了:' + JSON.stringify(n));
-      if (n) this.init();
+      this.inputsArrayLengthChange(n, o);
     } },
 
   created: function created() {
-    this.init(); //初始化
+    this.init(false, true); //初始化
+
+
+
   },
+
+  onReady: function onReady() {
+    this.onReady = true;
+  },
+
   methods: {
-    init: function init() {// 初始化默认数据
+    init: function init(fixedVariableNamePattern, launch) {// 初始化默认数据 param{是否是固定变量名模式初始化, 是否是首次初始化}
       var _this = this;
-      //console.log('初始化inputs');
+      console.log("\u521D\u59CB\u5316inputs".concat(launch ? '' : fixedVariableNamePattern ? '-固定变量名模式' : '-非固定变量名模式'));
       var data = _this.inputsArray;
       _this.$set(_this, 'verifyStatusObj', {});
-      if (_this.phoneIndex >= 0) _this.phoneIndex = -1;
+      if (_this.phoneIndex !== '') _this.phoneIndex = '';
       for (var i = 0; i < data.length; i++) {//循环inputsArray，对 相应类型相应初始化默认值
         var item = data[i];
-        var itemVariableName = _this.onLoadData + i;
+        var itemVariableName = item.variableName || _this.onLoadData + i;
+        if (_this.inputsObj[itemVariableName] !== undefined && _this.inputsObj[itemVariableName] !== null && fixedVariableNamePattern && item.type !== 'pics') {//固定变量名模式下有值的项跳过初始化
+          continue;
+        }
         if (item.phone)
-        if (!_this.phoneIndex) _this.phoneIndex = i;
+        if (!_this.phoneIndex) _this.phoneIndex = item.variableName || i;
         switch (item.type) {
           case 'radio':
             var _data = void 0;
@@ -22804,10 +22875,20 @@ var _default2 =
             break;
           case 'pics':
             for (var _j2 = 0; _j2 < item.itemArray.length; _j2++) {
+              var picVbNmae = void 0;
+              if (item.variableName)
+              picVbNmae = itemVariableName + _j2;else
+
+              picVbNmae = itemVariableName + _this.onLoadData + _j2;
+              if (fixedVariableNamePattern) {//固定变量名模式下有值的项跳过初始化
+                if (_this.picsObj[picVbNmae]) {
+                  continue;
+                }
+              }
               if (item.itemArray[_j2].defaultValue) {
-                _this.$set(_this.picsObj, itemVariableName + _this.onLoadData + _j2, item.itemArray[_j2].defaultValue);
+                _this.$set(_this.picsObj, picVbNmae, item.itemArray[_j2].defaultValue);
               } else {
-                _this.$set(_this.picsObj, itemVariableName + _this.onLoadData + _j2, '');
+                _this.$set(_this.picsObj, picVbNmae, '');
               }
             }
             break;
@@ -22868,114 +22949,100 @@ var _default2 =
             }
             break;
           case 'picker-custom':
-            if (item.onceShowDefaultValue) {var _ret = function () {
-                var datas = item.itemArray;
-                var v = [];
-                if (item.defaultValue)
-                v = item.defaultValue;else
-                {
-                  if (item.linkage)
-                  for (var _i = 0; _i < item.linkageNum; _i++) {
-                    v.push(0);
-                  } else
-
-                  item.itemArray.forEach(function (item) {
-                    v.push(0);
-                  });
+            if (item.onceShowDefaultValue) {
+              var datas = item.itemArray;
+              var v = [];
+              if (item.defaultValue)
+              v = item.defaultValue;
+              var _data4 = { result: {}, value: v };
+              var steps = item.steps;
+              if (item.linkage && !steps) {
+                _app2.default.showToast('未设置steps');
+                return;
+              }
+              if (item.linkage) {
+                for (var _i = 0; _i < item.linkageNum; _i++) {
+                  if (!v[_i]) v[_i] = 0;
                 }
-                var data = { result: {}, value: v };
-                var steps = item.steps;
-                if (item.linkage && !steps) {
-                  _app2.default.showToast('未设置steps');
-                  return { v: void 0 };
-                }
-                if (item.linkage) {
-                  if (item.linkageNum == 2) {
-                    data.result.steps1 = datas[v[0]];
-                    if (!data.result.steps1)
-                    _app2.default.showToast('第一列中不存在第' + v[0] + '项');
-                    data.result.steps2 = datas[v[0]][steps.steps_2_item][v[1]];
-                    if (!data.result.steps2)
-                    _app2.default.showToast('第二列中不存在第' + v[1] + '项');
-                  } else if (item.linkageNum == 3) {
-                    data.result.steps1 = datas[v[0]];
-                    if (!data.result.steps1)
-                    _app2.default.showToast('第一列中不存在第' + v[0] + '项');
-                    data.result.steps2 = data.result.steps1[steps.steps_2_item][v[1]];
-                    if (!data.result.steps2)
-                    _app2.default.showToast('第二列中不存在第' + v[1] + '项');
-                    data.result.steps3 = data.result.steps2[steps.steps_3_item][v[2]];
-                    if (!data.result.steps3)
-                    _app2.default.showToast('第三列中不存在第' + v[2] + '项');
-                  } else {
-                    _app2.default.showToast('不在指定范围中');
-                  }
+                if (item.linkageNum == 2) {
+                  _data4.result.steps1 = datas[v[0]];
+                  if (!_data4.result.steps1)
+                  _app2.default.showToast('第一列中不存在第' + v[0] + '项');
+                  _data4.result.steps2 = datas[v[0]][steps.steps_2_item][v[1]];
+                  if (!_data4.result.steps2)
+                  _app2.default.showToast('第二列中不存在第' + v[1] + '项');
+                } else if (item.linkageNum == 3) {
+                  _data4.result.steps1 = datas[v[0]];
+                  if (!_data4.result.steps1)
+                  _app2.default.showToast('第一列中不存在第' + v[0] + '项');
+                  _data4.result.steps2 = _data4.result.steps1[steps.steps_2_item][v[1]];
+                  if (!_data4.result.steps2)
+                  _app2.default.showToast('第二列中不存在第' + v[1] + '项');
+                  _data4.result.steps3 = _data4.result.steps2[steps.steps_3_item][v[2]];
+                  if (!_data4.result.steps3)
+                  _app2.default.showToast('第三列中不存在第' + v[2] + '项');
                 } else {
-                  data.result = [];
-                  for (var _i2 = 0; _i2 < datas.length; _i2++) {
-                    var _d = datas[_i2];
-                    data.result.push(_d[v[_i2]]);
-                  }
+                  _app2.default.showToast('不在指定范围中');
                 }
-                _this.$set(_this.inputsObj, itemVariableName, data);
-                _this.pickerObj[_app2.default.pickerChoosedType.pickerChoosedType_custom.value + i] = null;}();if (typeof _ret === "object") return _ret.v;
+              } else {
+                _data4.result = [];
+                for (var _i2 = 0; _i2 < datas.length; _i2++) {
+                  var _d = datas[_i2];
+                  _data4.result.push(_d[v[_i2] || 0]);
+                }
+              }
+              _this.$set(_this.inputsObj, itemVariableName, _data4);
+              _this.pickerObj[_app2.default.pickerChoosedType.pickerChoosedType_custom.value + i] = null;
             } else {
               _this.$set(_this.inputsObj, itemVariableName, '');
               _this.pickerObj[_app2.default.pickerChoosedType.pickerChoosedType_custom.value + i] = null;
             }
             break;
           case 'picker-custom2':
-            if (item.onceShowDefaultValue) {var _ret2 = function () {
-                var datas = item.linkage ? item.itemObject : item.itemArray;
-                var v = [];
-                if (item.defaultValue)
-                v = item.defaultValue;else
-                {
-                  if (item.linkage)
-                  for (var _i3 = 0; _i3 < item.linkageNum; _i3++) {
-                    v.push(0);
-                  } else
-
-                  item.itemArray.forEach(function (item) {
-                    v.push(0);
-                  });
+            if (item.onceShowDefaultValue) {
+              var _datas = item.linkage ? item.itemObject : item.itemArray;
+              var _v = [];
+              if (item.defaultValue)
+              _v = item.defaultValue;
+              var _data5 = { result: {}, value: _v };
+              var _steps = item.steps;
+              if (item.linkage && !_steps) {
+                _app2.default.showToast('未设置steps');
+                return;
+              }
+              if (item.linkage) {
+                for (var _i3 = 0; _i3 < item.linkageNum; _i3++) {
+                  if (!_v[_i3]) _v[_i3] = 0;
                 }
-                var data = { result: {}, value: v };
-                var steps = item.steps;
-                if (item.linkage && !steps) {
-                  _app2.default.showToast('未设置steps');
-                  return { v: void 0 };
-                }
-                if (item.linkage) {
-                  if (item.linkageNum == 2) {
-                    data.result.steps1 = datas.step_1[v[0]];
-                    if (!data.result.steps1)
-                    _app2.default.showToast('第一列中不存在第' + v[0] + '项');
-                    data.result.steps2 = datas.step_2[v[0]][v[1]];
-                    if (!data.result.steps2)
-                    _app2.default.showToast('第二列中不存在第' + v[1] + '项');
-                  } else if (item.linkageNum == 3) {
-                    data.result.steps1 = datas.step_1[v[0]];
-                    if (!data.result.steps1)
-                    _app2.default.showToast('第一列中不存在第' + v[0] + '项');
-                    data.result.steps2 = datas.step_2[v[0]][v[1]];
-                    if (!data.result.steps2)
-                    _app2.default.showToast('第二列中不存在第' + v[1] + '项');
-                    data.result.steps3 = datas.step_3[v[0]][v[1]][v[2]];
-                    if (!data.result.steps3)
-                    _app2.default.showToast('第三列中不存在第' + v[2] + '项');
-                  } else {
-                    _app2.default.showToast('不在指定范围中');
-                  }
+                if (item.linkageNum == 2) {
+                  _data5.result.steps1 = _datas.step_1[_v[0]];
+                  if (!_data5.result.steps1)
+                  _app2.default.showToast('第一列中不存在第' + _v[0] + '项');
+                  _data5.result.steps2 = _datas.step_2[_v[0]][_v[1]];
+                  if (!_data5.result.steps2)
+                  _app2.default.showToast('第二列中不存在第' + _v[1] + '项');
+                } else if (item.linkageNum == 3) {
+                  _data5.result.steps1 = _datas.step_1[_v[0]];
+                  if (!_data5.result.steps1)
+                  _app2.default.showToast('第一列中不存在第' + _v[0] + '项');
+                  _data5.result.steps2 = _datas.step_2[_v[0]][_v[1]];
+                  if (!_data5.result.steps2)
+                  _app2.default.showToast('第二列中不存在第' + _v[1] + '项');
+                  _data5.result.steps3 = _datas.step_3[_v[0]][_v[1]][_v[2]];
+                  if (!_data5.result.steps3)
+                  _app2.default.showToast('第三列中不存在第' + _v[2] + '项');
                 } else {
-                  data.result = [];
-                  for (var _i4 = 0; _i4 < datas.length; _i4++) {
-                    var _d2 = datas[_i4];
-                    data.result.push(_d2[v[_i4]]);
-                  }
+                  _app2.default.showToast('不在指定范围中');
                 }
-                _this.$set(_this.inputsObj, itemVariableName, data);
-                _this.pickerObj[_app2.default.pickerChoosedType.pickerChoosedType_custom2.value + i] = null;}();if (typeof _ret2 === "object") return _ret2.v;
+              } else {
+                _data5.result = [];
+                for (var _i4 = 0; _i4 < _datas.length; _i4++) {
+                  var _d2 = _datas[_i4];
+                  _data5.result.push(_d2[_v[_i4] || 0]);
+                }
+              }
+              _this.$set(_this.inputsObj, itemVariableName, _data5);
+              _this.pickerObj[_app2.default.pickerChoosedType.pickerChoosedType_custom2.value + i] = null;
             } else {
               _this.$set(_this.inputsObj, itemVariableName, '');
               _this.pickerObj[_app2.default.pickerChoosedType.pickerChoosedType_custom2.value + i] = null;
@@ -23002,12 +23069,12 @@ var _default2 =
               _areaDataList[_defaultValue[2]].label +
               '-' +
               streetDataList[_defaultValue[3]];
-              var _data4 = {
+              var _data6 = {
                 label: _pcikerLabel,
                 value: _defaultValue,
                 cityCode: _areaDataList[_defaultValue[2]].value };
 
-              _this.$set(_this.inputsObj, itemVariableName, _data4);
+              _this.$set(_this.inputsObj, itemVariableName, _data6);
               _this.pickerObj[_app2.default.pickerChoosedType.pickerChoosedType_city.value + i] = null; //初始化时清空记忆数据
             } else {
               _this.$set(_this.inputsObj, itemVariableName, null);
@@ -23037,44 +23104,51 @@ var _default2 =
       var _this = this;
       obj.index = index;
       _this.maskShow = true;
-      if (obj && obj.type)
-      switch (obj.type) {
-        case 'picker-date':
-          //记忆数据优先
-          if (_this.pickerObj[_app2.default.pickerChoosedType.pickerChoosedType_date.value + index]) obj.defaultValue = _this.pickerObj[_app2.default.pickerChoosedType.pickerChoosedType_date.value + index];
-          _this.P_data = obj;
-          _this.pickerDateShow = true;
-          break;
-        case 'picker-city':
-          //记忆数据优先
-          if (_this.pickerObj[_app2.default.pickerChoosedType.pickerChoosedType_city.value + index]) obj.defaultValue = _this.pickerObj[_app2.default.pickerChoosedType.pickerChoosedType_city.value + index];
-          _this.P_data = obj;
-          _this.pickerCityShow = true;
-          break;
-        case 'picker-custom':
-          //记忆数据优先
-          if (_this.pickerObj[_app2.default.pickerChoosedType.pickerChoosedType_custom.value + index]) obj.defaultValue = _this.pickerObj[_app2.default.pickerChoosedType.pickerChoosedType_custom.value + index];
-          _this.P_data = obj;
-          _this.pickerCustomShow = true;
-          break;
-        case 'picker-custom2':
-          //记忆数据优先
-          if (_this.pickerObj[_app2.default.pickerChoosedType.pickerChoosedType_custom2.value + index]) obj.defaultValue = _this.pickerObj[_app2.default.pickerChoosedType.pickerChoosedType_custom2.value + index];
-          _this.P_data = obj;
-          _this.pickerCustom2Show = true;
-          break;
-        case 'picker-provincialStreet':
-          //记忆数据优先
-          if (_this.pickerObj[_app2.default.pickerChoosedType.pickerChoosedType_provincialStreet.value + index]) obj.defaultValue = _this.pickerObj[_app2.default.pickerChoosedType.pickerChoosedType_provincialStreet.value + index];
-          _this.P_data = obj;
-          _this.pickerProvincialStreetShow = true;
-          break;
-        default:
-          _app2.default.showToast('缺少必要参数-type');
-          break;} else
+      if (obj && obj.type) {
+        var pickerValue;
+        switch (obj.type) {
+          case 'picker-date':
+            //记忆数据优先
+            pickerValue = _app2.default.pickerChoosedType.pickerChoosedType_date.value + index;
+            if (_this.pickerObj[pickerValue]) obj.defaultValue = _this.pickerObj[pickerValue];
+            _this.P_data = obj;
+            _this.pickerDateShow = true;
+            break;
+          case 'picker-city':
+            //记忆数据优先
+            pickerValue = _app2.default.pickerChoosedType.pickerChoosedType_city.value + index;
+            if (_this.pickerObj[pickerValue]) obj.defaultValue = _this.pickerObj[pickerValue];
+            _this.P_data = obj;
+            _this.pickerCityShow = true;
+            break;
+          case 'picker-custom':
+            //记忆数据优先
+            pickerValue = _app2.default.pickerChoosedType.pickerChoosedType_custom.value + index;
+            if (_this.pickerObj[pickerValue]) obj.defaultValue = _this.pickerObj[pickerValue];
+            _this.P_data = obj;
+            _this.pickerCustomShow = true;
+            break;
+          case 'picker-custom2':
+            //记忆数据优先
+            pickerValue = _app2.default.pickerChoosedType.pickerChoosedType_custom2.value + index;
+            if (_this.pickerObj[pickerValue]) obj.defaultValue = _this.pickerObj[pickerValue];
+            _this.P_data = obj;
+            _this.pickerCustom2Show = true;
+            break;
+          case 'picker-provincialStreet':
+            //记忆数据优先
+            pickerValue = _app2.default.pickerChoosedType.pickerChoosedType_provincialStreet.value + index;
+            if (_this.pickerObj[pickerValue]) obj.defaultValue = _this.pickerObj[pickerValue];
+            _this.P_data = obj;
+            _this.pickerProvincialStreetShow = true;
+            break;
+          default:
+            _app2.default.showToast('缺少必要参数-type');
+            break;}
 
-
-      _app2.default.showToast('picker参数错误');
+      } else {
+        _app2.default.showToast('picker参数类型错误');
+      }
     },
     IgreeFc: function IgreeFc(_ref) {var value = _ref.detail.value; // 用户是否同意规则
       this.Igree = value;
@@ -23083,8 +23157,17 @@ var _default2 =
       this.$emit('chaildOpenEvent', value);
     },
     checkbox_change: function checkbox_change(_ref2, index) {var value = _ref2.detail.value; //checkbox赋值方法
-      var checkboxArray = this.inputsArray[index].itemArray;
-      var oldData = this.inputsObj[this.onLoadData + index];
+      var cbObj;
+      var vbName;
+      if (_app2.default.regTest('Int', index)) {
+        cbObj = this.inputsArray[index];
+        vbName = this.onLoadData + index;
+      } else {
+        cbObj = this.inputsArray.find(function (item) {return item.variableName === index;});
+        vbName = index;
+      }
+      var checkboxArray = cbObj.itemArray;
+      var oldData = this.inputsObj[vbName];
       var newArray = [];
       var oldArray = [];
       if (checkboxArray.length > 0 && value.length > 0) {
@@ -23099,28 +23182,29 @@ var _default2 =
         });
       }
       var newData = { value: value, status: _app2.default.checkbox_status(newArray) };
-      this.$set(this.inputsObj, this.onLoadData + index, newData);
-      this._emitInputsChangeEvent({ newData: newData, oldData: oldData, index: index });
+      this.$set(this.inputsObj, vbName, newData);
+      this._emitEvent(_app2.default.eventNames.inputsChange, { newData: newData, oldData: oldData, index: index });
     },
-    inputs_change: function inputs_change(_ref3, index, filterFc, isInput) {var _this2 = this;var value = _ref3.detail.value; // 用户输入时，根据index赋值
+    inputs_change: function inputs_change(_ref3, index, filterFc, filterType, isInput) {var _this2 = this;var value = _ref3.detail.value; // 用户输入时，根据index赋值
       //console.log(e.detail.value);
+      console.log(index);
       if (this.inputDebounceSet.openInputDebounce && isInput) {
         if (inputDebounce[debounceName + index]) clearTimeout(inputDebounce[debounceName + index]);
         if (inputDebounce[debounceTimeName + index] && new Date().getTime() - inputDebounce[debounceTimeName + index] < (this.inputDebounceSet.delay || 500)) {
           console.log('防抖冲突,立即执行');
-          this.inputs_changeFc(value, index, filterFc, true);
+          this.inputs_changeFc(value, index, filterFc, filterType, true);
         } else {
           inputDebounce[debounceName + index] = setTimeout(function () {
             console.log('防抖');
-            _this2.inputs_changeFc(value, index, filterFc);
+            _this2.inputs_changeFc(value, index, filterFc, filterType);
           }, this.inputDebounceSet.delay || 500);
         }
       } else {
         console.log('无防抖');
-        this.inputs_changeFc(value, index, filterFc);
+        this.inputs_changeFc(value, index, filterFc, filterType);
       }
     },
-    inputs_changeFc: function inputs_changeFc(value, index, filterFc, clash) {
+    inputs_changeFc: function inputs_changeFc(value, index, filterFc, filterType, clash) {
       if (this.inputDebounceSet.openInputDebounce) {
         if (clash)
         inputDebounce[debounceTimeName + index] = 0;else
@@ -23130,37 +23214,51 @@ var _default2 =
       if (filterFc && typeof filterFc == 'function') {//有filterFc则过滤
         this.input_filter_change(value, index, filterFc);
       } else {
-        var d = this.inputsArray;
-        if (d[index].filterType && _app2.default.filterTypeObj[d[index].filterType] && typeof _app2.default.filterTypeObj[d[index].filterType] == 'function') {
-          this.input_filter_change(value, index, _app2.default.filterTypeObj[d[index].filterType]);
+        if (filterType && _app2.default.filterTypeObj[filterType] && typeof _app2.default.filterTypeObj[filterType] == 'function') {
+          this.input_filter_change(value, index, _app2.default.filterTypeObj[filterType]);
         } else {
-          var oldData = this.inputsObj[this.onLoadData + index];
-          this.$set(this.inputsObj, this.onLoadData + index, value);
-          this._emitInputsChangeEvent({ newData: value, oldData: oldData, index: index });
+          var vbName;
+          if (_app2.default.regTest('Int', index))
+          vbName = this.onLoadData + index;else
+
+          vbName = index;
+          var oldData = this.inputsObj[vbName];
+          console.log('vbName:' + vbName);
+          this.$set(this.inputsObj, vbName, value);
+          this._emitEvent(_app2.default.eventNames.inputsChange, { newData: value, oldData: oldData, index: index });
         }
       }
     },
     input_filter_change: function input_filter_change(value, index, filterFc) {var _this3 = this;
       var val = filterFc(value);
-      var oldData = this.inputsObj[this.onLoadData + index];
+      var vbName;
+      if (_app2.default.regTest('Int', index))
+      vbName = this.onLoadData + index;else
+
+      vbName = index;
+      var oldData = this.inputsObj[vbName];
       if (val != value) {
         new Promise(function (reslove, reject) {
-          _this3.$delete(_this3.inputsObj, _this3.onLoadData + index);
+          _this3.$delete(_this3.inputsObj, vbName);
           reslove();
         }).
         then(function () {
-          _this3.$set(_this3.inputsObj, _this3.onLoadData + index, val);
-          _this3._emitInputsChangeEvent({ newData: val, oldData: oldData, index: index });
+          _this3.$set(_this3.inputsObj, vbName, val);
+          _this3._emitEvent(_app2.default.eventNames.inputsChange, { newData: val, oldData: oldData, index: index });
         });
       } else {
-        this.$set(this.inputsObj, this.onLoadData + index, val);
-        this._emitInputsChangeEvent({ newData: val, oldData: oldData, index: index });
+        this.$set(this.inputsObj, vbName, val);
+        this._emitEvent(_app2.default.eventNames.inputsChange, { newData: val, oldData: oldData, index: index });
       }
     },
     picker_change: function picker_change(res) {//picker类型选择后赋值 
-      res.oldData = this.inputsObj[this.onLoadData + res.index];
+      var vbName = res.index;
+      if (_app2.default.regTest('Int', res.index))
+      vbName = this.onLoadData + res.index;
+
+      res.oldData = this.inputsObj[vbName];
       console.log('pickerValue：' + JSON.stringify(res));
-      this.inputsObj[this.onLoadData + res.index] = res.newData;
+      this.inputsObj[vbName] = res.newData;
       switch (res.type) {// 该项picker的value记忆
         case _app2.default.pickerChoosedType.pickerChoosedType_date.name:
           this.pickerObj[_app2.default.pickerChoosedType.pickerChoosedType_date.value + res.index] = res.newData;
@@ -23181,15 +23279,21 @@ var _default2 =
           break;}
 
       this.picker_hideFc();
-      this._emitInputsChangeEvent(res);
+      this._emitEvent(_app2.default.eventNames.inputsChange, res);
     },
     inputTap: function inputTap(type, index) {//input点击事件
+      var vbName;
+      if (_app2.default.regTest('Int', index))
+      vbName = this.onLoadData + index;else
+
+      vbName = index;
       switch (type) {
         case 'passwordSwitch': //密码显隐
-          this.$set(this.passwordObj, this.onLoadData + index + 'password', !this.passwordObj[this.onLoadData + index + 'password']);
+          var vn = vbName + 'password';
+          this.$set(this.passwordObj, vn, !this.passwordObj[vn]);
           break;
         case 'clear': //一键清除
-          this.$set(this.inputsObj, this.onLoadData + index, '');
+          this.$set(this.inputsObj, vbName, '');
           break;
         default:
           _app2.default.showToast('inputTap类型错误');
@@ -23218,23 +23322,49 @@ var _default2 =
     getCode: function getCode() {// 判断是否正确输入手机号后发送验证码并倒计时
       var _this = this;
       if (_this.startCode) return;
-      var index;
-      var d = _this.inputsArray;
-      var pIndex = _this.phoneIndex;
-      if (typeof pIndex === 'number' && pIndex >= 0) {
-        index = pIndex;
+      var phone;
+      var customId;
+      if (_this.otherSet && _this.otherSet.getCodeSet && _this.otherSet.getCodeSet.phoneNum) {
+        phone = _this.otherSet.getCodeSet.phoneNum;
+        customId = _this.otherSet.getCodeSet.customId;
       } else {
-        for (var i = 0; i < d.length; i++) {
-          if (d[i].phone) index = i;
+        var d = _this.inputsArray;
+        var pIndex = _this.phoneIndex;
+        var pVbName;
+        var obj;
+        if (!pIndex && pIndex !== 0) {
+          var o = _this.inputsArray.find(function (item) {return item.phone;});
+          if (o !== undefined && o !== null) {
+            if (o.variableName) {
+              pIndex = o.variableName;
+            } else {
+              pIndex = _this.inputsArray.findIndex(function (item) {return item.phone;});
+              if (pIndex < 0) {
+                _app2.default.showToast('找不到phone属性为true的inputsArray下标');
+                return;
+              }
+            }
+          } else {
+            _app2.default.showToast('找不到phone属性为true的inputsArray项');
+            return;
+          }
         }
+        if (_app2.default.regTest('Int', pIndex)) {
+          pVbName = _this.onLoadData + pIndex;
+          obj = _this.inputsArray[pIndex];
+        } else {
+          pVbName = pIndex;
+          obj = _this.inputsArray.find(function (item) {return item.variableName === pIndex;});
+        }
+        if (!pVbName || pVbName === '') {
+          _app2.default.showToast('判断phone属性时出错');
+          return;
+        }
+        phone = _this.inputsObj[pVbName];
+        customId = obj.customId;
       }
-      if (!typeof index === 'number' || index < 0) {
-        _app2.default.showToast('判断phone属性时出错');
-        return;
-      }
-      var phone = _this.inputsObj[_this.onLoadData + index];
-      if (/^[1][3,4,5,7,8][0-9]{9}$/.test(phone)) {//正则判断
-        this.code = _app2.default.sendSMS(d[index].customId, phone);
+      if (_app2.default.regTest('Tel', phone)) {//正则判断
+        _this.code = _app2.default.sendSMS(customId, phone);
       } else {
         _app2.default.showToast('请正确输入11位手机号');
         return;
@@ -23265,17 +23395,27 @@ var _default2 =
           case 'pics':
             ifUsePics.push(i); //记录使用图片类型的index
             for (var j = 0; j < d[i].itemArray.length; j++) {
-              var pic = _this.picsObj[onLoadData + _this.onLoadData + j];
+              var picvbName = void 0;
+              if (d[i].variableName)
+              picvbName = d[i].variableName + j;else
+
+              picvbName = onLoadData + _this.onLoadData + j;
+              var pic = _this.picsObj[picvbName];
+              var notHave = void 0;
+              if (d[i].variableName) {
+                notHave = !inputsDataObj[variableName];
+              } else {
+                notHave = !inputsDataObj[onLoadData] && !inputsDataObj[variableName];
+              }
+              if (notHave) {
+                inputsDataObj[variableName] = [];
+              }
               if (pic) {
                 _this.change_verifyStatus(i, 0, j);
-                if (!inputsDataObj[onLoadData] && !inputsDataObj[variableName])
-                inputsDataObj[variableName] = [];
                 inputsDataObj[variableName].push(pic);
               } else {
-                if (d[i].itemArray[j].ignore) {
+                if (d[i].itemArray[j].ignore || d[i].hide && d[i].ignore !== false) {
                   _this.change_verifyStatus(i, 0, j);
-                  if (!inputsDataObj[onLoadData] && !inputsDataObj[variableName])
-                  inputsDataObj[variableName] = [];
                   inputsDataObj[variableName].push('');
                 } else {
                   _this.change_verifyStatus(i, 2, j);
@@ -23286,25 +23426,25 @@ var _default2 =
             }
             break;
           case 'switch':
-            inputsDataObj[variableName] = _this.inputsObj[onLoadData] ? true : false;
+            inputsDataObj[variableName] = _this.inputsObj[variableName] ? true : false;
             break;
           case 'slider':
-            inputsDataObj[variableName] = _this.inputsObj[onLoadData];
+            inputsDataObj[variableName] = _this.inputsObj[variableName];
             break;
           case 'text':
             break;
           case 'checkbox':
-            if ((!_this.inputsObj[onLoadData].value || _this.inputsObj[onLoadData].value.length === 0) && !d[i].ignore) {
+            if ((!_this.inputsObj[variableName].value || _this.inputsObj[variableName].value.length === 0) && d[i].ignore !== false && !d[i].hide) {
               _this.change_verifyStatus(i, 2);
               _app2.default.showToast(d[i].nullErr || (d[i].title || '第' + i + '项') + '不能为空');
               return;
             }
             _this.change_verifyStatus(i, 0);
-            inputsDataObj[variableName] = _this.inputsObj[onLoadData];
+            inputsDataObj[variableName] = _this.inputsObj[variableName];
             break;
           default:
-            if (!_this.inputsObj[onLoadData]) {
-              if (d[i].ignore) {
+            if (!_this.inputsObj[variableName]) {
+              if (d[i].ignore || d[i].hide && d[i].ignore !== false) {
                 _this.change_verifyStatus(i, 0);
                 inputsDataObj[variableName] = '';
               } else {
@@ -23314,20 +23454,20 @@ var _default2 =
               }
             } else {
               if (d[i].verifyType && _app2.default.verifyTypeObj[d[i].verifyType])
-              if (!_app2.default.verifyTypeObj[d[i].verifyType].reg.test(_this.inputsObj[onLoadData])) {
+              if (!_app2.default.verifyTypeObj[d[i].verifyType].reg.test(_this.inputsObj[variableName])) {
                 _this.change_verifyStatus(i, 1);
                 _app2.default.showToast(d[i].verifyErr || (d[i].title || '第' + i + '项') + _app2.default.verifyTypeObj[d[i].verifyType].name + '格式校验错误');
                 return;
               }
               var verifyFc = d[i].verifyFc;
               if (verifyFc && typeof verifyFc == 'function')
-              if (!verifyFc(_this.inputsObj[onLoadData])) {
+              if (!verifyFc(_this.inputsObj[variableName])) {
                 _this.change_verifyStatus(i, 1);
                 _app2.default.showToast(d[i].verifyErr || (d[i].title || '第' + i + '项') + '格式校验错误');
                 return;
               }
               _this.change_verifyStatus(i, 0);
-              inputsDataObj[variableName] = _this.inputsObj[onLoadData];
+              inputsDataObj[variableName] = _this.inputsObj[variableName];
             }
             break;}
 
@@ -23335,12 +23475,17 @@ var _default2 =
       // 判断是否需要同意规则
       if (_this.ifRule)
       if (!_this.Igree) {
-        var ruleName = '';
-        var rules = _this.ruleSet.itemArray;
-        for (var _i5 = 0; _i5 < rules.length; _i5++) {
-          ruleName += _i5 == 0 ? rules[_i5].name : '、' + rules[_i5].name;
+        var ruleErrToast = '';
+        if (_this.ruleSet.ruleErr) {
+          ruleErrToast = _this.ruleSet.ruleErr;
+        } else {
+          var rules = _this.ruleSet.itemArray;
+          for (var _i5 = 0; _i5 < rules.length; _i5++) {
+            ruleErrToast += _i5 == 0 ? rules[_i5].name : '、' + rules[_i5].name;
+          }
+          ruleErrToast = '请先阅读并勾选' + ruleErrToast;
         }
-        _app2.default.showToast('请先阅读并勾选' + ruleName);
+        _app2.default.showToast(ruleErrToast);
         return;
       }
       // 判断是否填写验证码并判断是否正确
@@ -23367,17 +23512,18 @@ var _default2 =
           var variableName = d[index].variableName || onLoadData;
           if (d[index].type && d[index].type == 'pics') {var _loop2 = function _loop2(
             _j3) {
-              if (inputsDataObj[variableName][_j3]) {
+              var picsObj = inputsDataObj[variableName][_j3];
+              if (picsObj) {
                 pic_promise.push(new Promise(function (reslove, reject) {
                   // push Promise 上传图片到服务器并返回图片在服务器的地址并拼接的方法
-                  _app2.default.UpLoadFile(d[index].customId, inputsDataObj[variableName][_j3]).then(function (res) {
+                  _app2.default.UpLoadFile(d[index].customId, picsObj).then(function (res) {
                     reslove({
                       index1: index,
                       index2: _j3,
                       data: res.data });
 
                   }).catch(function (err) {
-                    reject(err || d[index].itemArray[_j3].title || (d[index].title || '第' + index + '的' + '第' + _j3 + '项') + '上传失败');
+                    reject(err || (d[index].itemArray[_j3].title || d[index].title || d[index].variableName || '第' + index + '的' + '第' + _j3 + '项') + '上传失败');
                   });
                 }));
               } else {
@@ -23416,21 +23562,31 @@ var _default2 =
       if (this.submitReSet) this.init();
     },
     chooseImg: function chooseImg(index, picsIndex) {var _this5 = this; //选择图片
-      if (this.picsObj[this.onLoadData + index + this.onLoadData + picsIndex]) return;
-      var oldData = this.picsObj[this.onLoadData + index + this.onLoadData + picsIndex];
+      var vbName;
+      if (_app2.default.regTest('Int', index))
+      vbName = this.onLoadData + index + this.onLoadData + picsIndex;else
+
+      vbName = index + picsIndex;
+      if (this.picsObj[vbName]) return;
+      var oldData = this.picsObj[vbName];
       uni.chooseImage({
         success: function success(res) {
           // console.log(res.tempFilePaths[0]);
           var newData = res.tempFilePaths[0];
-          _this5.$set(_this5.picsObj, _this5.onLoadData + index + _this5.onLoadData + picsIndex, newData);
-          _this5._emitInputsChangeEvent({ newData: newData, oldData: oldData, index: index, picsIndex: picsIndex });
+          _this5.$set(_this5.picsObj, vbName, newData);
+          _this5._emitEvent(_app2.default.eventNames.inputsChange, { newData: newData, oldData: oldData, index: index, picsIndex: picsIndex });
         } });
 
     },
     clearPic: function clearPic(index, picsIndex) {//清除图片
-      var oldData = this.picsObj[this.onLoadData + index + this.onLoadData + picsIndex];
-      this.picsObj[this.onLoadData + index + this.onLoadData + picsIndex] = '';
-      this._emitInputsChangeEvent({ newData: '', oldData: oldData, index: index, picsIndex: picsIndex });
+      var vbName;
+      if (_app2.default.regTest('Int', index))
+      vbName = this.onLoadData + index + this.onLoadData + picsIndex;else
+
+      vbName = index + picsIndex;
+      var oldData = this.picsObj[vbName];
+      this.picsObj[vbName] = '';
+      this._emitEvent(_app2.default.eventNames.inputsChange, { newData: '', oldData: oldData, index: index, picsIndex: picsIndex });
     },
     showImg: function showImg(imgPath) {//大图预览选中的图片
       _app2.default.previewImage(imgPath);
@@ -23445,37 +23601,18 @@ var _default2 =
       this.P_data = {};
     },
     focusChange: function focusChange(index) {
+      var vbName;
+      if (typeof index === 'string')
+      vbName = index;else
+
+      vbName = this.onLoadData + index;
       var o = {};
-      o[this.onLoadData + index + 'focus'] = true;
+      o[vbName + 'focus'] = true;
       this.$set(this, 'focusObj', o);
     },
     blurChange: function blurChange(index) {
       var o = {};
       this.$set(this, 'focusObj', o);
-    },
-    setFocus: function setFocus(param, val, fcb) {
-      var i;
-      switch (typeof param) {
-        case 'string':
-          i = this.inputsArray.findIndex(function (item) {return item.title === param;});
-          break;
-        case 'number':
-          i = param;
-          break;
-        case 'function':
-          i = param(this.inputsArray);
-          break;
-        default:
-          console.log('setFocus方法传入的参数不正确');
-          if (fcb && typeof fcb === 'function') fcb();
-          return;
-          break;}
-
-
-      if (typeof i == 'number' && i >= 0)
-      this.$set(this.focusObj, this.onLoadData + i + 'focus', val);else
-
-      if (fcb && typeof fcb === 'function') fcb();
     },
     change_verifyStatus: function change_verifyStatus(index, status, index2) {var _this6 = this; //0:none, 1:error, 2:warning
       var verifyStatusSet = this.verifyStatusSet;
@@ -23488,8 +23625,18 @@ var _default2 =
         case 2:c = verifyStatusSet.errNullColor || 'rgba(245,16,92,.7)';ifnotSuccess = true;break;
         default:c = 'rgba(0,0,0,0)';break;}
 
+      var ifVariableName = false;
+      var vbName = this.inputsArray[index].variableName;
+      var inputId;
+      if (vbName) {
+        ifVariableName = true;
+        inputId = vbName;
+      } else {
+        vbName = this.onLoadData + index;
+        inputId = index;
+      }
       if (verifyStatusSet.openChangeBorderColor)
-      this.$set(this.verifyStatusObj, this.onLoadData + index + (typeof index2 == 'number' && index2 >= 0 ? this.onLoadData + index2 : ''), c); // 校验失败时, 改变边框颜色
+      this.$set(this.verifyStatusObj, vbName + (typeof index2 == 'number' && index2 >= 0 ? ifVariableName ? index2 : this.onLoadData + index2 : ''), c); // 校验失败时, 改变边框颜色
       if (verifyStatusSet.openScroll && ifnotSuccess) {
         var view;
 
@@ -23502,9 +23649,9 @@ var _default2 =
 
         if (this.usingComponents) {
           if (!verifyStatusSet.inputsId) {console.log('找不到inputsId, 请在verifyStatusSet中传此参数');return;}
-          view = uni.createSelectorQuery().select("#".concat(verifyStatusSet.inputsId, " >>> #Id_").concat(index));
+          view = uni.createSelectorQuery().select("#".concat(verifyStatusSet.inputsId, " >>> #Id_").concat(inputId));
         } else {
-          view = uni.createSelectorQuery().select("#Id_".concat(index));
+          view = uni.createSelectorQuery().select("#Id_".concat(inputId));
         }
         var p1 = new Promise(function (rs, rj) {view.fields({ rect: true }, function (data) {if (data) rs(data);else rj(1);}).exec();});
         var p2 = new Promise(function (rs, rj) {uni.createSelectorQuery().selectViewport().scrollOffset(function (res) {if (res) rs(res);else rj(2);}).exec();});
@@ -23518,7 +23665,7 @@ var _default2 =
           switch (err) {
             case 1:
               console.log('首次滚动失败, 正在尝试切换参数后重试滚动, 注意: 注意自己的编译模式, 若为自定义组件模式, 请传参数usingComponents为true, 详见v6.1更新说明 http://ext.dcloud.net.cn/plugin?id=149');
-              _this6.retryScroll(verifyStatusSet, index);
+              _this6.retryScroll(verifyStatusSet, inputId);
               break;
             case 2:
               console.log('获取滚动条位置信息失败');
@@ -23530,13 +23677,13 @@ var _default2 =
 
       }
     },
-    retryScroll: function retryScroll(verifyStatusSet, index) {//切换参数重试滚动
+    retryScroll: function retryScroll(verifyStatusSet, inputId) {//切换参数重试滚动
       var view;
       if (this.usingComponents) {
-        view = uni.createSelectorQuery().select("#Id_".concat(index));
+        view = uni.createSelectorQuery().select("#Id_".concat(inputId));
       } else {
         if (!verifyStatusSet.inputsId) {console.log('找不到inputsId, 请在verifyStatusSet中传此参数');return;}
-        view = uni.createSelectorQuery().select("#".concat(verifyStatusSet.inputsId, " >>> #Id_").concat(index));
+        view = uni.createSelectorQuery().select("#".concat(verifyStatusSet.inputsId, " >>> #Id_").concat(inputId));
       }
       var p1 = new Promise(function (rs, rj) {view.fields({ rect: true }, function (data) {if (data) rs(data);else rj('重试滚动失败, 获取节点信息失败');}).exec();});
       var p2 = new Promise(function (rs, rj) {uni.createSelectorQuery().selectViewport().scrollOffset(function (res) {if (res) rs(res);else rj('获取滚动条位置信息失败');}).exec();});
@@ -23551,37 +23698,154 @@ var _default2 =
         console.log(err);
       });
     },
-    setInputsValue: function setInputsValue(param, val, fcb) {// 能够筛选出index的title或者function或者number， 值， 错误回调
-      var index;
+    setFocus: function setFocus() {
+      this.setInputsValueFc(_app2.default.setValueType.focusObj, arguments);
+    },
+    setInputsValue: function setInputsValue() {// 能够筛选出index的title或者function或者number， 值， 错误回调
+      this.setInputsValueFc(_app2.default.setValueType.inputsObj, arguments);
+    },
+    setInputsValueFc: function setInputsValueFc(obj, params) {var _app$filterParams =
+      _app2.default.filterParams(params, _app2.default.filterParamsArrayType.setInputsValueFc),param = _app$filterParams.param,value = _app$filterParams.value,fail = _app$filterParams.fail,isVariableName = _app$filterParams.isVariableName;
+      var i;
       switch (typeof param) {
         case 'string':
-          index = this.inputsArray.findIndex(function (item) {return item.title === param;});
-          break;
-        case 'function':
-          index = param(this.inputsArray);
+          i = isVariableName ? param : this.inputsArray.findIndex(function (item) {return item.title === param;});
           break;
         case 'number':
-          index = param;
+          i = param;
+          break;
+        case 'function':
+          i = param(this.inputsArray);
           break;
         default:
-          console.log('setInputsValue方法中不支持的类型');
+          console.log('setFocus方法传入的参数不正确');
           if (fcb && typeof fcb === 'function') fcb();
+          return;
           break;}
 
-      if (typeof index === 'number' && index >= 0)
-      this.$set(this.inputsObj, this.onLoadData + index, val);else
 
-      if (fcb && typeof fcb === 'function') fcb();
+      var isNumber = _app2.default.isNumber(i);
+      if (isNumber ? i < 0 : i === '') {
+        if (fail && typeof fail === 'function') fail(isNumber ? '下标小于零' : '匹配标识不能为空');
+      } else {
+        this.$set(this[obj.name], (isNumber ? this.onLoadData + i : i) + obj.itemName, value);
+      }
     },
-    _emitInputsChangeEvent: function _emitInputsChangeEvent(obj) {//绑定的inputsChange回调
-      var _obj = obj,index = _obj.index;
-      obj = _objectSpread({},
-      obj, {
-        type: (obj.type ? obj.type : this.inputsArray[index].type) || 'input',
-        title: this.inputsArray[index].title,
-        customId: this.inputsArray[index].customId });
+    _emitEvent: function _emitEvent(name, obj) {//绑定的inputsChange回调
+      switch (name) {
+        case _app2.default.eventNames.inputsChange: //inputsChange回调
+          var _obj = obj,index = _obj.index;
+          var itemObj;
+          if (_app2.default.regTest('Int', index))
+          itemObj = this.inputsArray[index];else
 
-      this.$emit(_app2.default.inputsChangeEventName, obj);
+          itemObj = this.inputsArray.find(function (item) {return item.variableName === index;});
+          obj = _objectSpread({},
+          obj, {
+            type: (obj.type ? obj.type : itemObj.type) || 'input',
+            title: itemObj.title,
+            customId: itemObj.customId });
+
+          break;
+        default:
+          break;}
+
+      this.$emit(name, obj);
+    },
+    inputsArrayLengthChange: function inputsArrayLengthChange(n, o) {var _this7 = this; //switch监听inputsArray变化时触发的方法
+      var oSet = new Set();
+      for (var i = 0; i < o.length; i++) {
+        if (o[i].variableName) {
+          oSet.add(o[i].variableName);
+        } else {
+          console.log('旧数组中' + (o[i].title || '第' + i + '项') + '没有variableName属性，执行初始化函数');
+          this.init();
+          return;
+        }
+      }
+      var nSet = new Set();
+      for (var _i8 = 0; _i8 < n.length; _i8++) {
+        if (n[_i8].variableName) {
+          nSet.add(n[_i8].variableName);
+        } else {
+          console.log('新数组中' + (n[_i8].title || '第' + _i8 + '项') + '没有variableName属性，执行初始化函数');
+          this.init();
+          return;
+        }
+      }
+      if (oSet.size !== o.length || nSet.size !== n.length) {
+        console.log('检查结果-不符合固定变量名模式, 执行初始化函数');
+        this.init();
+      } else {
+        console.log('检查结果-符合固定变量名模式，执行初始化函数时跳过已有值的项');
+        if (nSet.size < oSet.size) {//新数组长度小于旧数组长度，去除多余无用变量
+          console.log('新数组长度小于旧数组长度，准备去除多余无用变量');
+          var oArr = Array.from(oSet);
+          for (var _i9 = 0; _i9 < oArr.length; _i9++) {
+            if (!nSet.has(oArr[_i9])) {(function () {
+                var vbName = oArr[_i9];
+                console.log('发现多余项:' + vbName);
+                if (vbName) {
+                  var obj = o.find(function (item) {return item.variableName === vbName;});
+                  var pickerValue;
+                  switch (obj.type) {
+                    case 'pics':
+                      if (obj.itemArray) {
+                        for (var _i10 = 0; _i10 < obj.itemArray.length; _i10++) {
+                          var picVbName = vbName + _i10;
+                          console.log('去除picsObj变量:' + picVbName + ', 值为:' + _this7.picsObj[picVbName]);
+                          _this7.$delete(_this7.picsObj, picVbName);
+                        }
+                      }
+                      break;
+                    case 'picker-date':
+                      pickerValue = _app2.default.pickerChoosedType.pickerChoosedType_date.value + vbName;
+                      console.log('去除inputsObj变量:' + vbName + ', 值为:' + _this7.inputsObj[vbName]);
+                      console.log('去除pickerObj变量:' + pickerValue + ', 值为:' + _this7.pickerObj[pickerValue]);
+                      _this7.$delete(_this7.inputsObj, vbName);
+                      _this7.$delete(_this7.pickerObj, pickerValue);
+                      break;
+                    case 'picker-city':
+                      pickerValue = _app2.default.pickerChoosedType.pickerChoosedType_city.value + vbName;
+                      console.log('去除变量:' + vbName + ', 值为:' + _this7.inputsObj[vbName]);
+                      console.log('去除pickerObj变量:' + pickerValue + ', 值为:' + _this7.pickerObj[pickerValue]);
+                      _this7.$delete(_this7.inputsObj, vbName);
+                      _this7.$delete(_this7.pickerObj, pickerValue);
+                      break;
+                    case 'picker-custom':
+                      pickerValue = _app2.default.pickerChoosedType.pickerChoosedType_custom.value + vbName;
+                      console.log('去除变量:' + vbName + ', 值为:' + _this7.inputsObj[vbName]);
+                      console.log('去除pickerObj变量:' + pickerValue + ', 值为:' + _this7.pickerObj[pickerValue]);
+                      _this7.$delete(_this7.inputsObj, vbName);
+                      _this7.$delete(_this7.pickerObj, pickerValue);
+                      break;
+                    case 'picker-custom2':
+                      pickerValue = _app2.default.pickerChoosedType.pickerChoosedType_custom2.value + vbName;
+                      console.log('去除变量:' + vbName + ', 值为:' + _this7.inputsObj[vbName]);
+                      console.log('去除pickerObj变量:' + pickerValue + ', 值为:' + _this7.pickerObj[pickerValue]);
+                      _this7.$delete(_this7.inputsObj, vbName);
+                      _this7.$delete(_this7.pickerObj, pickerValue);
+                      break;
+                    case 'picker-provincialStreet':
+                      pickerValue = _app2.default.pickerChoosedType.pickerChoosedType_provincialStreet.value + vbName;
+                      console.log('去除变量:' + vbName + ', 值为:' + _this7.inputsObj[vbName]);
+                      console.log('去除pickerObj变量:' + pickerValue + ', 值为:' + _this7.pickerObj[pickerValue]);
+                      _this7.$delete(_this7.inputsObj, vbName);
+                      _this7.$delete(_this7.pickerObj, pickerValue);
+                      break;
+                    default:
+                      console.log('去除变量:' + vbName + ', 值为:' + _this7.inputsObj[vbName]);
+                      _this7.$delete(_this7.inputsObj, vbName);
+                      break;}
+
+                }})();
+            }
+          }
+        } else {
+          console.log('长度没有变化, 若确定改变了inputsArray的长度，请检查是否在模板模式下使用了unshift、splice等方法，建议模板模式下对inputsArray重新赋值');
+        }
+        this.init(true);
+      }
     } } };exports.default = _default2;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["default"]))
 
@@ -23657,7 +23921,7 @@ var _app2 = _interopRequireDefault(__webpack_require__(/*! ../app.js */ "../../.
       default: 10 },
 
     confirmName: String,
-    index: Number,
+    index: String,
     confirmStyle: String },
 
   methods: {
@@ -23757,7 +24021,7 @@ var _app2 = _interopRequireDefault(__webpack_require__(/*! ../app.js */ "../../.
       default: 10 },
 
     confirmName: String,
-    index: Number,
+    index: String,
     confirmStyle: String },
 
   data: function data() {
@@ -23901,7 +24165,7 @@ var _app2 = _interopRequireDefault(__webpack_require__(/*! ./app.js */ "../../..
       default: 10 },
 
     confirmName: String,
-    index: Number,
+    index: String,
     indicatorStyle: String,
     height: Number,
     wH: Number,
@@ -23936,6 +24200,9 @@ var _app2 = _interopRequireDefault(__webpack_require__(/*! ./app.js */ "../../..
       var data = { result: {}, value: v };
       var steps = _this.steps;
       if (_this.linkage) {
+        for (var i = 0; i < _this.linkageNum; i++) {
+          if (!v[i]) v[i] = 0;
+        }
         if (_this.linkageNum == 2) {//二级联动
           data.result.steps1 = datas[v[0]];
           data.result.steps2 = datas[v[0]][steps.steps_2_item][v[1]];
@@ -23954,9 +24221,9 @@ var _app2 = _interopRequireDefault(__webpack_require__(/*! ./app.js */ "../../..
         }
       } else {//无联动
         data.result = [];
-        for (var i = 0; i < datas.length; i++) {
-          var d = datas[i];
-          data.result.push(d[v[i] || 0]);
+        for (var _i = 0; _i < datas.length; _i++) {
+          var d = datas[_i];
+          data.result.push(d[v[_i] || 0]);
         }
       }
       _this.$emit('getCustom', { newData: data, index: _this.index, type: _app2.default.pickerChoosedType.pickerChoosedType_custom.name });
@@ -24048,7 +24315,7 @@ var _app2 = _interopRequireDefault(__webpack_require__(/*! ./app.js */ "../../..
       default: 10 },
 
     confirmName: String,
-    index: Number,
+    index: String,
     indicatorStyle: String,
     height: Number,
     wH: Number,
@@ -24083,6 +24350,9 @@ var _app2 = _interopRequireDefault(__webpack_require__(/*! ./app.js */ "../../..
       var data = { result: {}, value: v };
       var steps = _this.steps;
       if (_this.linkage) {
+        for (var i = 0; i < _this.linkageNum; i++) {
+          if (!v[i]) v[i] = 0;
+        }
         if (_this.linkageNum == 2) {//二级联动
           data.result.steps1 = datas.step_1[v[0]];
           data.result.steps2 = datas.step_2[v[0]][v[1]];
@@ -24101,9 +24371,9 @@ var _app2 = _interopRequireDefault(__webpack_require__(/*! ./app.js */ "../../..
         }
       } else {//无联动
         data.result = [];
-        for (var i = 0; i < datas.length; i++) {
-          var d = datas[i];
-          data.result.push(d[v[i] || 0]);
+        for (var _i = 0; _i < datas.length; _i++) {
+          var d = datas[_i];
+          data.result.push(d[v[_i] || 0]);
         }
       }
       _this.$emit('getCustom', { newData: data, index: _this.index, type: _app2.default.pickerChoosedType.pickerChoosedType_custom2.name });
@@ -24193,7 +24463,7 @@ var _app2 = _interopRequireDefault(__webpack_require__(/*! ./app.js */ "../../..
       default: 10 },
 
     confirmName: String,
-    index: Number,
+    index: String,
     confirmStyle: String },
 
   data: function data() {
@@ -24526,15 +24796,32 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "view",
-    { staticClass: "width100 overflow_x_hidden" },
+    {
+      directives: [
+        {
+          name: "show",
+          rawName: "v-show",
+          value: _vm.onReady,
+          expression: "onReady"
+        }
+      ],
+      staticClass: "width100 overflow_x_hidden"
+    },
     [
       _vm._l(_vm.inputsArray, function(item, index) {
         return _c(
           "view",
           {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: !item.hide,
+                expression: "!item.hide"
+              }
+            ],
             key: item.title,
-            staticClass:
-              "width100 box-sizing-border-box transition_border_point6s border_radius_4px",
+            staticClass: "width100 transition_border_point6s border_radius_4px",
             class: [item.animationType || _vm.animationType || ""],
             style:
               _vm.classObj.padding2_3 +
@@ -24543,9 +24830,11 @@ var render = function() {
                 (item.animationDuration || _vm.animationDuration || 0.2) +
               "s;" +
               "border: 1px solid " +
-              (_vm.verifyStatusObj[_vm.onLoadData + index] || "rgba(0,0,0,0)") +
+              (_vm.verifyStatusObj[
+                item.variableName || _vm.onLoadData + index
+              ] || "rgba(0,0,0,0)") +
               ";",
-            attrs: { id: "Id_" + index }
+            attrs: { id: "Id_" + (item.variableName || index) }
           },
           [
             item.segmentationTitle
@@ -24579,7 +24868,8 @@ var render = function() {
                       "view",
                       {
                         staticClass: "width20 marginRight5 flex_row_e_c",
-                        style: _vm.classObj.titleColor + _vm.classObj.titleFs
+                        style:
+                          _vm.classObj.titleColor + _vm.classObj.titleFontSize
                       },
                       [
                         _c(
@@ -24589,9 +24879,22 @@ var render = function() {
                             class: _vm.classObj.titleLayout
                           },
                           [
-                            item.type != "pics" && !item.ignore && item.title
+                            item.type != "pics" &&
+                            !item.ignore &&
+                            item.title &&
+                            (_vm.otherSet.requiredFieldsSet
+                              ? !_vm.otherSet.requiredFieldsSet
+                                  .hideRequiredFields
+                              : true)
                               ? _c("view", { staticClass: "fontColorF1505C" }, [
-                                  _vm._v("*")
+                                  _vm._v(
+                                    _vm._s(
+                                      _vm.otherSet.requiredFieldsSet
+                                        ? _vm.otherSet.requiredFieldsSet
+                                            .requiredFieldsFlag || "*"
+                                        : "*"
+                                    )
+                                  )
                                 ])
                               : _vm._e(),
                             _vm._v(_vm._s(item.title ? item.title : ""))
@@ -24613,7 +24916,6 @@ var render = function() {
                       ? _c(
                           "view",
                           {
-                            staticClass: "box-sizing-border-box",
                             style:
                               _vm.classObj.padding1_0 +
                               _vm.classObj.contentWidth
@@ -24634,15 +24936,17 @@ var render = function() {
                                   {
                                     key: picsIndex,
                                     staticClass:
-                                      "flex_column_c_c box-sizing-border-box border_radius_4px transition_border_point6s",
+                                      "flex_column_c_c border_radius_4px transition_border_point6s",
                                     style:
                                       _vm.classObj.paddingPoint5 +
                                       "border: 1px solid " +
                                       (_vm.verifyStatusObj[
-                                        _vm.onLoadData +
-                                          index +
-                                          _vm.onLoadData +
-                                          picsIndex
+                                        item.variableName
+                                          ? item.variableName + picsIndex
+                                          : _vm.onLoadData +
+                                            index +
+                                            _vm.onLoadData +
+                                            picsIndex
                                       ] || "rgba(0,0,0,0)") +
                                       ";"
                                   },
@@ -24662,16 +24966,21 @@ var render = function() {
                                         },
                                         on: {
                                           tap: function($event) {
-                                            _vm.chooseImg(index, picsIndex)
+                                            _vm.chooseImg(
+                                              item.variableName || index,
+                                              picsIndex
+                                            )
                                           }
                                         }
                                       },
                                       [
                                         _vm.picsObj[
-                                          _vm.onLoadData +
-                                            index +
-                                            _vm.onLoadData +
-                                            picsIndex
+                                          item.variableName
+                                            ? item.variableName + picsIndex
+                                            : _vm.onLoadData +
+                                              index +
+                                              _vm.onLoadData +
+                                              picsIndex
                                         ]
                                           ? _c("image", {
                                               staticClass:
@@ -24680,10 +24989,13 @@ var render = function() {
                                               attrs: {
                                                 src:
                                                   _vm.picsObj[
-                                                    _vm.onLoadData +
-                                                      index +
-                                                      _vm.onLoadData +
-                                                      picsIndex
+                                                    item.variableName
+                                                      ? item.variableName +
+                                                        picsIndex
+                                                      : _vm.onLoadData +
+                                                        index +
+                                                        _vm.onLoadData +
+                                                        picsIndex
                                                   ],
                                                 mode: "aspectFill",
                                                 eventid:
@@ -24696,10 +25008,13 @@ var render = function() {
                                                 tap: function($event) {
                                                   _vm.showImg(
                                                     _vm.picsObj[
-                                                      _vm.onLoadData +
-                                                        index +
-                                                        _vm.onLoadData +
-                                                        picsIndex
+                                                      item.variableName
+                                                        ? item.variableName +
+                                                          picsIndex
+                                                        : _vm.onLoadData +
+                                                          index +
+                                                          _vm.onLoadData +
+                                                          picsIndex
                                                     ]
                                                   )
                                                 }
@@ -24711,7 +25026,8 @@ var render = function() {
                                                 _c("uni-icon", {
                                                   attrs: {
                                                     type: "image",
-                                                    pxSize: _vm.wH * 0.05,
+                                                    pxSize:
+                                                      _vm.classObj.size6wW,
                                                     color: "#999999",
                                                     mpcomid:
                                                       "6bb4817a-0-" +
@@ -24724,10 +25040,12 @@ var render = function() {
                                               1
                                             ),
                                         _vm.picsObj[
-                                          _vm.onLoadData +
-                                            index +
-                                            _vm.onLoadData +
-                                            picsIndex
+                                          item.variableName
+                                            ? item.variableName + picsIndex
+                                            : _vm.onLoadData +
+                                              index +
+                                              _vm.onLoadData +
+                                              picsIndex
                                         ]
                                           ? _c(
                                               "view",
@@ -24745,7 +25063,8 @@ var render = function() {
                                                     $event.stopPropagation()
                                                     $event.preventDefault()
                                                     _vm.clearPic(
-                                                      index,
+                                                      item.variableName ||
+                                                        index,
                                                       picsIndex
                                                     )
                                                   }
@@ -24758,7 +25077,8 @@ var render = function() {
                                                     color:
                                                       item.clearColor ||
                                                       "#f5105c",
-                                                    pxSize: _vm.wH * 0.03,
+                                                    pxSize:
+                                                      _vm.classObj.size4wW,
                                                     mpcomid:
                                                       "6bb4817a-1-" +
                                                       index +
@@ -24780,7 +25100,7 @@ var render = function() {
                                               "flex_row_c_c fontColorADADAD",
                                             style:
                                               _vm.classObj.picsTitle +
-                                              _vm.classObj.content
+                                              _vm.classObj.contentFontSize
                                           },
                                           [
                                             !picsItem.ignore
@@ -24819,7 +25139,10 @@ var render = function() {
                                   ");",
                                 attrs: {
                                   checked:
-                                    _vm.inputsObj[_vm.onLoadData + index],
+                                    _vm.inputsObj[
+                                      item.variableName ||
+                                        _vm.onLoadData + index
+                                    ],
                                   disabled: item.disabled,
                                   type: item.mode || "switch",
                                   color: item.color,
@@ -24827,7 +25150,10 @@ var render = function() {
                                 },
                                 on: {
                                   change: function($event) {
-                                    _vm.inputs_change($event, index)
+                                    _vm.inputs_change(
+                                      $event,
+                                      item.variableName || index
+                                    )
                                   }
                                 }
                               })
@@ -24842,7 +25168,10 @@ var render = function() {
                               max: item.max || 100,
                               step: item.step || 1,
                               disabled: item.disabled,
-                              value: _vm.inputsObj[_vm.onLoadData + index],
+                              value:
+                                _vm.inputsObj[
+                                  item.variableName || _vm.onLoadData + index
+                                ],
                               color: item.color,
                               "selected-color": item.selected_color,
                               activeColor: item.activeColor,
@@ -24854,7 +25183,10 @@ var render = function() {
                             },
                             on: {
                               change: function($event) {
-                                _vm.inputs_change($event, index)
+                                _vm.inputs_change(
+                                  $event,
+                                  item.variableName || index
+                                )
                               }
                             }
                           })
@@ -24875,7 +25207,10 @@ var render = function() {
                                 },
                                 on: {
                                   change: function($event) {
-                                    _vm.inputs_change($event, index)
+                                    _vm.inputs_change(
+                                      $event,
+                                      item.variableName || index
+                                    )
                                   }
                                 }
                               },
@@ -24888,9 +25223,9 @@ var render = function() {
                                   {
                                     key: radioIndex,
                                     staticClass:
-                                      "fontColor666666 flex_row_none_c box-sizing-border-box",
+                                      "fontColor666666 flex_row_none_c",
                                     style:
-                                      _vm.classObj.content +
+                                      _vm.classObj.contentFontSize +
                                       _vm.classObj.padding1 +
                                       _vm.classObj.marginRight2
                                   },
@@ -24904,7 +25239,8 @@ var render = function() {
                                         value: radioItem.value,
                                         checked:
                                           _vm.inputsObj[
-                                            _vm.onLoadData + index
+                                            item.variableName ||
+                                              _vm.onLoadData + index
                                           ] == radioItem.value,
                                         disabled: radioItem.disabled,
                                         color: radioItem.color || item.color
@@ -24939,7 +25275,10 @@ var render = function() {
                                 },
                                 on: {
                                   change: function($event) {
-                                    _vm.checkbox_change($event, index)
+                                    _vm.checkbox_change(
+                                      $event,
+                                      item.variableName || index
+                                    )
                                   }
                                 }
                               },
@@ -24952,9 +25291,9 @@ var render = function() {
                                   {
                                     key: checkboxIndex,
                                     staticClass:
-                                      "fontColor666666 flex_row_none_c box-sizing-border-box",
+                                      "fontColor666666 flex_row_none_c",
                                     style:
-                                      _vm.classObj.content +
+                                      _vm.classObj.contentFontSize +
                                       _vm.classObj.padding1 +
                                       _vm.classObj.marginRight2
                                   },
@@ -24968,12 +25307,17 @@ var render = function() {
                                         value: checkboxItem.value,
                                         checked:
                                           _vm.inputsObj[
-                                            _vm.onLoadData + index
+                                            item.variableName ||
+                                              _vm.onLoadData + index
                                           ] &&
-                                          _vm.inputsObj[_vm.onLoadData + index]
-                                            .status &&
-                                          _vm.inputsObj[_vm.onLoadData + index]
-                                            .status[checkboxIndex],
+                                          _vm.inputsObj[
+                                            item.variableName ||
+                                              _vm.onLoadData + index
+                                          ].status &&
+                                          _vm.inputsObj[
+                                            item.variableName ||
+                                              _vm.onLoadData + index
+                                          ].status[checkboxIndex],
                                         disabled: checkboxItem.disabled,
                                         color: checkboxItem.color || item.color
                                       }
@@ -25012,7 +25356,8 @@ var render = function() {
                                 border:
                                   "1px solid " +
                                   (_vm.focusObj[
-                                    _vm.onLoadData + index + "focus"
+                                    (item.variableName ||
+                                      _vm.onLoadData + index) + "focus"
                                   ]
                                     ? item.focusBorderStyle ||
                                       _vm.focusStyle.focusBorderStyle ||
@@ -25022,16 +25367,24 @@ var render = function() {
                                       "#f8f8f8")
                               },
                               attrs: {
-                                value: _vm.inputsObj[_vm.onLoadData + index],
+                                value:
+                                  _vm.inputsObj[
+                                    item.variableName || _vm.onLoadData + index
+                                  ],
                                 placeholder:
                                   item.placeholder || "请输入" + item.title,
-                                "placeholder-style": item.placeholder_style,
+                                "placeholder-style":
+                                  "font-size:" +
+                                  _vm.classObj.contentSize +
+                                  "px;" +
+                                  item.placeholder_style,
                                 "placeholder-class": item.placeholder_class,
                                 disabled: item.disabled,
                                 maxlength: item.maxlength || 140,
                                 focus:
                                   _vm.focusObj[
-                                    _vm.onLoadData + index + "focus"
+                                    (item.variableName ||
+                                      _vm.onLoadData + index) + "focus"
                                   ],
                                 "auto-height": item.auto_height,
                                 fixed: item.fixed,
@@ -25047,16 +25400,16 @@ var render = function() {
                                 input: function($event) {
                                   _vm.inputs_change(
                                     $event,
-                                    index,
+                                    item.variableName || index,
                                     item.filterFc,
                                     true
                                   )
                                 },
                                 focus: function($event) {
-                                  _vm.focusChange(index)
+                                  _vm.focusChange(item.variableName || index)
                                 },
                                 blur: function($event) {
-                                  _vm.blurChange(index)
+                                  _vm.blurChange(item.variableName || index)
                                 }
                               }
                             })
@@ -25072,7 +25425,9 @@ var render = function() {
                               _vm.classObj.contentWidth
                           },
                           [
-                            _vm.inputsObj[_vm.onLoadData + index]
+                            _vm.inputsObj[
+                              item.variableName || _vm.onLoadData + index
+                            ]
                               ? _c(
                                   "view",
                                   { staticClass: "flex_row_none_c width100" },
@@ -25082,13 +25437,14 @@ var render = function() {
                                       {
                                         staticClass:
                                           "flex_row_e_c width70 fontColor666666 word_wrap",
-                                        style: _vm.classObj.content
+                                        style: _vm.classObj.contentFontSize
                                       },
                                       [
                                         _vm._v(
                                           _vm._s(
                                             _vm.inputsObj[
-                                              _vm.onLoadData + index
+                                              item.variableName ||
+                                                _vm.onLoadData + index
                                             ]
                                           )
                                         )
@@ -25112,7 +25468,10 @@ var render = function() {
                                             },
                                             on: {
                                               tap: function($event) {
-                                                _vm.showPicker(item, index)
+                                                _vm.showPicker(
+                                                  item,
+                                                  item.variableName || index
+                                                )
                                               }
                                             }
                                           },
@@ -25143,7 +25502,10 @@ var render = function() {
                                         },
                                         on: {
                                           tap: function($event) {
-                                            _vm.showPicker(item, index)
+                                            _vm.showPicker(
+                                              item,
+                                              item.variableName || index
+                                            )
                                           }
                                         }
                                       },
@@ -25168,7 +25530,9 @@ var render = function() {
                               _vm.classObj.contentWidth
                           },
                           [
-                            _vm.inputsObj[_vm.onLoadData + index]
+                            _vm.inputsObj[
+                              item.variableName || _vm.onLoadData + index
+                            ]
                               ? _c(
                                   "view",
                                   { staticClass: "flex_row_none_c width100" },
@@ -25178,13 +25542,14 @@ var render = function() {
                                       {
                                         staticClass:
                                           "flex_row_e_c width70 fontColor666666 word_wrap",
-                                        style: _vm.classObj.content
+                                        style: _vm.classObj.contentFontSize
                                       },
                                       [
                                         _vm._v(
                                           _vm._s(
                                             _vm.inputsObj[
-                                              _vm.onLoadData + index
+                                              item.variableName ||
+                                                _vm.onLoadData + index
                                             ].label
                                           )
                                         )
@@ -25208,7 +25573,10 @@ var render = function() {
                                             },
                                             on: {
                                               tap: function($event) {
-                                                _vm.showPicker(item, index)
+                                                _vm.showPicker(
+                                                  item,
+                                                  item.variableName || index
+                                                )
                                               }
                                             }
                                           },
@@ -25239,7 +25607,10 @@ var render = function() {
                                         },
                                         on: {
                                           tap: function($event) {
-                                            _vm.showPicker(item, index)
+                                            _vm.showPicker(
+                                              item,
+                                              item.variableName || index
+                                            )
                                           }
                                         }
                                       },
@@ -25264,7 +25635,9 @@ var render = function() {
                               _vm.classObj.contentWidth
                           },
                           [
-                            _vm.inputsObj[_vm.onLoadData + index]
+                            _vm.inputsObj[
+                              item.variableName || _vm.onLoadData + index
+                            ]
                               ? _c(
                                   "view",
                                   { staticClass: "flex_row_none_c width100" },
@@ -25276,14 +25649,16 @@ var render = function() {
                                             {
                                               staticClass:
                                                 "flex_row_e_c width70 fontColor666666 word_wrap",
-                                              style: _vm.classObj.content
+                                              style:
+                                                _vm.classObj.contentFontSize
                                             },
                                             [
                                               _vm._v(
                                                 _vm._s(
                                                   item.linkageNum == 2
                                                     ? _vm.inputsObj[
-                                                        _vm.onLoadData + index
+                                                        item.variableName ||
+                                                          _vm.onLoadData + index
                                                       ].result.steps1[
                                                         item.steps.steps_1_value
                                                       ] +
@@ -25291,40 +25666,46 @@ var render = function() {
                                                         (item.steps
                                                           .steps_2_value
                                                           ? _vm.inputsObj[
-                                                              _vm.onLoadData +
-                                                                index
+                                                              item.variableName ||
+                                                                _vm.onLoadData +
+                                                                  index
                                                             ].result.steps2[
                                                               item.steps
                                                                 .steps_2_value
                                                             ]
                                                           : _vm.inputsObj[
-                                                              _vm.onLoadData +
-                                                                index
+                                                              item.variableName ||
+                                                                _vm.onLoadData +
+                                                                  index
                                                             ].result.steps2)
                                                     : item.linkageNum == 3
                                                     ? _vm.inputsObj[
-                                                        _vm.onLoadData + index
+                                                        item.variableName ||
+                                                          _vm.onLoadData + index
                                                       ].result.steps1[
                                                         item.steps.steps_1_value
                                                       ] +
                                                       "-" +
                                                       _vm.inputsObj[
-                                                        _vm.onLoadData + index
+                                                        item.variableName ||
+                                                          _vm.onLoadData + index
                                                       ].result.steps2[
                                                         item.steps.steps_2_value
                                                       ] +
                                                       "-" +
                                                       (item.steps.steps_3_value
                                                         ? _vm.inputsObj[
-                                                            _vm.onLoadData +
-                                                              index
+                                                            item.variableName ||
+                                                              _vm.onLoadData +
+                                                                index
                                                           ].result.steps3[
                                                             item.steps
                                                               .steps_3_value
                                                           ]
                                                         : _vm.inputsObj[
-                                                            _vm.onLoadData +
-                                                              index
+                                                            item.variableName ||
+                                                              _vm.onLoadData +
+                                                                index
                                                           ].result.steps3)
                                                     : "不在范围中"
                                                 )
@@ -25338,11 +25719,13 @@ var render = function() {
                                             {
                                               staticClass:
                                                 "flex_row_e_c width70 fontColor666666 word_wrap",
-                                              style: _vm.classObj.content
+                                              style:
+                                                _vm.classObj.contentFontSize
                                             },
                                             _vm._l(
                                               _vm.inputsObj[
-                                                _vm.onLoadData + index
+                                                item.variableName ||
+                                                  _vm.onLoadData + index
                                               ].result,
                                               function(i, d) {
                                                 return _c("view", { key: d }, [
@@ -25393,7 +25776,10 @@ var render = function() {
                                             },
                                             on: {
                                               tap: function($event) {
-                                                _vm.showPicker(item, index)
+                                                _vm.showPicker(
+                                                  item,
+                                                  item.variableName || index
+                                                )
                                               }
                                             }
                                           },
@@ -25425,7 +25811,10 @@ var render = function() {
                                         },
                                         on: {
                                           tap: function($event) {
-                                            _vm.showPicker(item, index)
+                                            _vm.showPicker(
+                                              item,
+                                              item.variableName || index
+                                            )
                                           }
                                         }
                                       },
@@ -25450,7 +25839,9 @@ var render = function() {
                               _vm.classObj.contentWidth
                           },
                           [
-                            _vm.inputsObj[_vm.onLoadData + index]
+                            _vm.inputsObj[
+                              item.variableName || _vm.onLoadData + index
+                            ]
                               ? _c(
                                   "view",
                                   { staticClass: "flex_row_none_c width100" },
@@ -25463,7 +25854,8 @@ var render = function() {
                                                 {
                                                   staticClass:
                                                     "flex_row_e_c width70 fontColor666666 word_wrap",
-                                                  style: _vm.classObj.content
+                                                  style:
+                                                    _vm.classObj.contentFontSize
                                                 },
                                                 [
                                                   _vm._v(
@@ -25471,29 +25863,33 @@ var render = function() {
                                                       (item.steps &&
                                                       item.steps.step_1_value
                                                         ? _vm.inputsObj[
-                                                            _vm.onLoadData +
-                                                              index
+                                                            item.variableName ||
+                                                              _vm.onLoadData +
+                                                                index
                                                           ].result.steps1[
                                                             item.steps
                                                               .step_1_value
                                                           ]
                                                         : _vm.inputsObj[
-                                                            _vm.onLoadData +
-                                                              index
+                                                            item.variableName ||
+                                                              _vm.onLoadData +
+                                                                index
                                                           ].result.steps1) +
                                                         "-" +
                                                         (item.steps &&
                                                         item.steps.step_2_value
                                                           ? _vm.inputsObj[
-                                                              _vm.onLoadData +
-                                                                index
+                                                              item.variableName ||
+                                                                _vm.onLoadData +
+                                                                  index
                                                             ].result.steps2[
                                                               item.steps
                                                                 .step_2_value
                                                             ]
                                                           : _vm.inputsObj[
-                                                              _vm.onLoadData +
-                                                                index
+                                                              item.variableName ||
+                                                                _vm.onLoadData +
+                                                                  index
                                                             ].result.steps2)
                                                     )
                                                   )
@@ -25505,7 +25901,8 @@ var render = function() {
                                                 {
                                                   staticClass:
                                                     "flex_row_e_c width70 fontColor666666 word_wrap",
-                                                  style: _vm.classObj.content
+                                                  style:
+                                                    _vm.classObj.contentFontSize
                                                 },
                                                 [
                                                   _vm._v(
@@ -25513,43 +25910,49 @@ var render = function() {
                                                       (item.steps &&
                                                       item.steps.step_1_value
                                                         ? _vm.inputsObj[
-                                                            _vm.onLoadData +
-                                                              index
+                                                            item.variableName ||
+                                                              _vm.onLoadData +
+                                                                index
                                                           ].result.steps1[
                                                             item.steps
                                                               .step_1_value
                                                           ]
                                                         : _vm.inputsObj[
-                                                            _vm.onLoadData +
-                                                              index
+                                                            item.variableName ||
+                                                              _vm.onLoadData +
+                                                                index
                                                           ].result.steps1) +
                                                         "-" +
                                                         (item.steps &&
                                                         item.steps.step_2_value
                                                           ? _vm.inputsObj[
-                                                              _vm.onLoadData +
-                                                                index
+                                                              item.variableName ||
+                                                                _vm.onLoadData +
+                                                                  index
                                                             ].result.steps2[
                                                               item.steps
                                                                 .step_2_value
                                                             ]
                                                           : _vm.inputsObj[
-                                                              _vm.onLoadData +
-                                                                index
+                                                              item.variableName ||
+                                                                _vm.onLoadData +
+                                                                  index
                                                             ].result.steps2) +
                                                         "-" +
                                                         (item.steps &&
                                                         item.steps.step_3_value
                                                           ? _vm.inputsObj[
-                                                              _vm.onLoadData +
-                                                                index
+                                                              item.variableName ||
+                                                                _vm.onLoadData +
+                                                                  index
                                                             ].result.steps3[
                                                               item.steps
                                                                 .step_3_value
                                                             ]
                                                           : _vm.inputsObj[
-                                                              _vm.onLoadData +
-                                                                index
+                                                              item.variableName ||
+                                                                _vm.onLoadData +
+                                                                  index
                                                             ].result.steps3)
                                                     )
                                                   )
@@ -25563,11 +25966,13 @@ var render = function() {
                                             {
                                               staticClass:
                                                 "flex_row_e_c width70 fontColor666666 word_wrap",
-                                              style: _vm.classObj.content
+                                              style:
+                                                _vm.classObj.contentFontSize
                                             },
                                             _vm._l(
                                               _vm.inputsObj[
-                                                _vm.onLoadData + index
+                                                item.variableName ||
+                                                  _vm.onLoadData + index
                                               ].result,
                                               function(i, d) {
                                                 return _c("view", { key: d }, [
@@ -25618,7 +26023,10 @@ var render = function() {
                                             },
                                             on: {
                                               tap: function($event) {
-                                                _vm.showPicker(item, index)
+                                                _vm.showPicker(
+                                                  item,
+                                                  item.variableName || index
+                                                )
                                               }
                                             }
                                           },
@@ -25650,7 +26058,10 @@ var render = function() {
                                         },
                                         on: {
                                           tap: function($event) {
-                                            _vm.showPicker(item, index)
+                                            _vm.showPicker(
+                                              item,
+                                              item.variableName || index
+                                            )
                                           }
                                         }
                                       },
@@ -25675,7 +26086,9 @@ var render = function() {
                               _vm.classObj.contentWidth
                           },
                           [
-                            _vm.inputsObj[_vm.onLoadData + index]
+                            _vm.inputsObj[
+                              item.variableName || _vm.onLoadData + index
+                            ]
                               ? _c(
                                   "view",
                                   { staticClass: "flex_row_none_c width100" },
@@ -25685,13 +26098,14 @@ var render = function() {
                                       {
                                         staticClass:
                                           "flex_row_e_c fontColor666666 width70 word_wrap",
-                                        style: _vm.classObj.content
+                                        style: _vm.classObj.contentFontSize
                                       },
                                       [
                                         _vm._v(
                                           _vm._s(
                                             _vm.inputsObj[
-                                              _vm.onLoadData + index
+                                              item.variableName ||
+                                                _vm.onLoadData + index
                                             ].label
                                           )
                                         )
@@ -25715,7 +26129,10 @@ var render = function() {
                                             },
                                             on: {
                                               tap: function($event) {
-                                                _vm.showPicker(item, index)
+                                                _vm.showPicker(
+                                                  item,
+                                                  item.variableName || index
+                                                )
                                               }
                                             }
                                           },
@@ -25746,7 +26163,10 @@ var render = function() {
                                         },
                                         on: {
                                           tap: function($event) {
-                                            _vm.showPicker(item, index)
+                                            _vm.showPicker(
+                                              item,
+                                              item.variableName || index
+                                            )
                                           }
                                         }
                                       },
@@ -25781,7 +26201,8 @@ var render = function() {
                                   {
                                     staticClass: "fontColor666666",
                                     style:
-                                      item.titleStyle || _vm.classObj.content
+                                      item.titleStyle ||
+                                      _vm.classObj.contentFontSize
                                   },
                                   [
                                     _vm._v(
@@ -25797,7 +26218,8 @@ var render = function() {
                                       ? "text_overflow_ellipsis"
                                       : "",
                                     style:
-                                      _vm.classObj.content + item.contentStyle
+                                      _vm.classObj.contentFontSize +
+                                      item.contentStyle
                                   },
                                   [_vm._v(_vm._s(item.content))]
                                 )
@@ -25812,7 +26234,10 @@ var render = function() {
                             style:
                               _vm.classObj.contentWidth +
                               "border-bottom: 1px solid " +
-                              (_vm.focusObj[_vm.onLoadData + index + "focus"]
+                              (_vm.focusObj[
+                                (item.variableName || _vm.onLoadData + index) +
+                                  "focus"
+                              ]
                                 ? item.focusBorderStyle ||
                                   _vm.focusStyle.focusBorderStyle ||
                                   "#999999"
@@ -25859,16 +26284,20 @@ var render = function() {
                                 _c("input", {
                                   staticClass: "fontColor666666",
                                   class: item.icon ? "width85" : "width100",
-                                  style: _vm.classObj.content,
+                                  style: _vm.classObj.contentFontSize,
                                   attrs: {
                                     type: item.inputType || "text",
                                     value:
-                                      _vm.inputsObj[_vm.onLoadData + index],
+                                      _vm.inputsObj[
+                                        item.variableName ||
+                                          _vm.onLoadData + index
+                                      ],
                                     placeholder:
                                       item.placeholder || "请输入" + item.title,
                                     password:
                                       _vm.passwordObj[
-                                        _vm.onLoadData + index + "password"
+                                        (item.variableName ||
+                                          _vm.onLoadData + index) + "password"
                                       ],
                                     "placeholder-style": item.placeholder_style,
                                     "placeholder-class": item.placeholder_class,
@@ -25876,7 +26305,8 @@ var render = function() {
                                     "cursor-spacing": item.cursor_spacing,
                                     focus:
                                       _vm.focusObj[
-                                        _vm.onLoadData + index + "focus"
+                                        (item.variableName ||
+                                          _vm.onLoadData + index) + "focus"
                                       ],
                                     "confirm-type": item.confirm_type,
                                     "confirm-hold": item.confirm_hold,
@@ -25891,16 +26321,19 @@ var render = function() {
                                     input: function($event) {
                                       _vm.inputs_change(
                                         $event,
-                                        index,
+                                        item.variableName || index,
                                         item.filterFc,
+                                        item.filterType,
                                         true
                                       )
                                     },
                                     focus: function($event) {
-                                      _vm.focusChange(index)
+                                      _vm.focusChange(
+                                        item.variableName || index
+                                      )
                                     },
                                     blur: function($event) {
-                                      _vm.blurChange(index)
+                                      _vm.blurChange(item.variableName || index)
                                     }
                                   }
                                 })
@@ -25919,7 +26352,10 @@ var render = function() {
                                         tap: function($event) {
                                           $event.preventDefault()
                                           $event.stopPropagation()
-                                          _vm.inputTap("passwordSwitch", index)
+                                          _vm.inputTap(
+                                            "passwordSwitch",
+                                            item.variableName || index
+                                          )
                                         }
                                       }
                                     },
@@ -25929,7 +26365,9 @@ var render = function() {
                                           type: "eye",
                                           pxSize: _vm.classObj.iconSize,
                                           color: _vm.passwordObj[
-                                            _vm.onLoadData + index + "password"
+                                            (item.variableName ||
+                                              _vm.onLoadData + index) +
+                                              "password"
                                           ]
                                             ? "#999999"
                                             : item.iconColor || "#33cc33",
@@ -25943,7 +26381,9 @@ var render = function() {
                               : _vm._e(),
                             item.tapClear
                               ? _c("view", { staticClass: "width15" }, [
-                                  _vm.inputsObj[_vm.onLoadData + index] != ""
+                                  _vm.inputsObj[
+                                    item.variableName || _vm.onLoadData + index
+                                  ] != ""
                                     ? _c(
                                         "view",
                                         {
@@ -25955,7 +26395,10 @@ var render = function() {
                                             tap: function($event) {
                                               $event.preventDefault()
                                               $event.stopPropagation()
-                                              _vm.inputTap("clear", index)
+                                              _vm.inputTap(
+                                                "clear",
+                                                item.variableName || index
+                                              )
                                             }
                                           }
                                         },
@@ -25987,7 +26430,7 @@ var render = function() {
         ? _c(
             "view",
             {
-              staticClass: "flex_row width100 box-sizing-border-box",
+              staticClass: "flex_row width100",
               class: [_vm.animationType || ""],
               style: _vm.classObj.padding2_3 + _vm.classObj.animationDuration1
             },
@@ -25998,12 +26441,24 @@ var render = function() {
                     {
                       staticClass: "width20 marginRight5",
                       class: _vm.classObj.titleLayout,
-                      style: _vm.classObj.titleFs + _vm.classObj.titleColor
+                      style:
+                        _vm.classObj.titleFontSize + _vm.classObj.titleColor
                     },
                     [
-                      _c("view", { staticClass: "fontColorF1505C" }, [
-                        _vm._v("*")
-                      ]),
+                      (_vm.otherSet.requiredFieldsSet
+                      ? !_vm.otherSet.requiredFieldsSet.hideRequiredFields
+                      : true)
+                        ? _c("view", { staticClass: "fontColorF1505C" }, [
+                            _vm._v(
+                              _vm._s(
+                                _vm.otherSet.requiredFieldsSet
+                                  ? _vm.otherSet.requiredFieldsSet
+                                      .requiredFieldsFlag || "*"
+                                  : "*"
+                              )
+                            )
+                          ])
+                        : _vm._e(),
                       _vm._v("验证码")
                     ]
                   )
@@ -26027,11 +26482,14 @@ var render = function() {
                       _c("view", { staticClass: "width45" }, [
                         _c("input", {
                           staticClass: "width100 borderBottom1pxf2f2f2",
-                          style: _vm.classObj.content,
+                          style: _vm.classObj.contentFontSize,
                           attrs: {
                             type: "text",
                             value: _vm.userCode,
-                            placeholder: "请输入验证码",
+                            placeholder: _vm.otherSet.getCodeSet
+                              ? _vm.otherSet.getCodeSet
+                                  .securityCodePlaceholder || "请输入验证码"
+                              : "请输入验证码",
                             eventid: "6bb4817a-21"
                           },
                           on: {
@@ -26091,12 +26549,12 @@ var render = function() {
         ? _c(
             "view",
             {
-              staticClass: "flex_row_c_c box-sizing-border-box fontColor666666",
+              staticClass: "flex_row_c_c fontColor666666",
               class: [_vm.animationType || ""],
               style:
                 _vm.classObj.padding1_3 +
                 _vm.classObj.animationDuration1 +
-                _vm.classObj.content
+                _vm.classObj.contentFontSize
             },
             [
               _c("label", { staticClass: "flex_row_c_c" }, [
@@ -26109,7 +26567,7 @@ var render = function() {
                   },
                   on: { change: _vm.IgreeFc }
                 }),
-                _vm._v("我已阅读并同意")
+                _vm._v(_vm._s(_vm.ruleSet.rulePreText || "我已阅读并同意"))
               ]),
               _vm._l(_vm.ruleSet.itemArray, function(ruleItem, ruleIndex) {
                 return _c(
@@ -26617,7 +27075,7 @@ var render = function() {
                             "picker-view-column",
                             { attrs: { mpcomid: "38f70642-1" } },
                             _vm._l(
-                              _vm.itemArray[_vm.value[0]][
+                              _vm.itemArray[_vm.value[0] || 0][
                                 _vm.steps.steps_2_item
                               ],
                               function(item, index) {
@@ -26657,7 +27115,7 @@ var render = function() {
                             "picker-view-column",
                             { attrs: { mpcomid: "38f70642-3" } },
                             _vm._l(
-                              _vm.itemArray[_vm.value[0]][
+                              _vm.itemArray[_vm.value[0] || 0][
                                 _vm.steps.steps_2_item
                               ],
                               function(item, index) {
@@ -26677,9 +27135,9 @@ var render = function() {
                             "picker-view-column",
                             { attrs: { mpcomid: "38f70642-4" } },
                             _vm._l(
-                              _vm.itemArray[_vm.value[0]][
+                              _vm.itemArray[_vm.value[0] || 0][
                                 _vm.steps.steps_2_item
-                              ][_vm.value[1]][_vm.steps.steps_3_item],
+                              ][_vm.value[1] || 0][_vm.steps.steps_3_item],
                               function(item, index) {
                                 return _c(
                                   "view",
@@ -26833,7 +27291,7 @@ var render = function() {
                             "picker-view-column",
                             { attrs: { mpcomid: "e5e9c19a-1" } },
                             _vm._l(
-                              _vm.itemObject.step_2[_vm.value[0]],
+                              _vm.itemObject.step_2[_vm.value[0] || 0],
                               function(item, index) {
                                 return _c(
                                   "view",
@@ -26884,7 +27342,7 @@ var render = function() {
                             "picker-view-column",
                             { attrs: { mpcomid: "e5e9c19a-3" } },
                             _vm._l(
-                              _vm.itemObject.step_2[_vm.value[0]],
+                              _vm.itemObject.step_2[_vm.value[0] || 0],
                               function(item, index) {
                                 return _c(
                                   "view",
@@ -26906,7 +27364,9 @@ var render = function() {
                             "picker-view-column",
                             { attrs: { mpcomid: "e5e9c19a-4" } },
                             _vm._l(
-                              _vm.itemObject.step_3[_vm.value[0]][_vm.value[1]],
+                              _vm.itemObject.step_3[_vm.value[0] || 0][
+                                _vm.value[1] || 0
+                              ],
                               function(item, index) {
                                 return _c(
                                   "view",

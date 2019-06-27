@@ -1,0 +1,2 @@
+<import src="./shopApply2.vue.wxml" />
+    <template is="9ec150aa" data="{{ ...$root['0'], $root }}"/>

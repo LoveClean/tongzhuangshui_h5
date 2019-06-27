@@ -1,5 +1,5 @@
 {
   "usingComponents": {},
-  "navigationBarTitleText": "配送加盟",
-  "softinputNavBar": "none"
+  "enablePullDownRefresh": true,
+  "navigationBarTextStyle": "black"
 }

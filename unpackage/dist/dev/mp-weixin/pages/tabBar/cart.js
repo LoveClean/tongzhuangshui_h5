@@ -493,6 +493,7 @@ var _uniPopup = _interopRequireDefault(__webpack_require__(/*! @/components/uni-
         success: function success(ret) {
           if (_this.myAddrMain.address != ret.data.address) {
             console.log('地址已更换');
+            console.log(ret);
             _this.myAddrMain = ret.data;
             // console.log(ret.data.id);
             //根据我选择的位置加载附近店铺
@@ -951,7 +952,7 @@ var render = function() {
                       )
                     ]),
                     _c("view", { staticClass: "addres" }, [
-                      _vm._v(_vm._s(item.areaName) + _vm._s(item.address))
+                      _vm._v(_vm._s(item.areaName) + " " + _vm._s(item.address))
                     ])
                   ])
                 ])

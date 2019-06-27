@@ -241,7 +241,7 @@ __webpack_require__.r(__webpack_exports__);
         // {text:'银行卡',img:'../../static/img/user/bank.png'},
         // {text:'抽奖',img:'../../static/img/user/choujiang.png'},
         // {text:'客服',img:'../../static/img/user/kefu.png'},
-        // {text:'签到',img:'../../static/img/user/mingxi.png'}
+        // { text: '开票申请', img: '../../static/img/user/mingxi.png' }
       }] };
 
   },
@@ -312,6 +312,10 @@ __webpack_require__.r(__webpack_exports__);
       } else if (row.text === '优惠券') {
         uni.navigateTo({
           url: '../user/coupon/coupon' });
+
+      } else if (row.text === '开票申请') {
+        uni.navigateTo({
+          url: '../address/edit' });
 
       }
     },

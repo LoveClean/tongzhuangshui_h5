@@ -95,7 +95,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default =
 
 
 
@@ -105,160 +105,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var _inputs = _interopRequireDefault(__webpack_require__(/*! @/components/QuShe-inputs/inputs.vue */ "../../../../Users/64165/Desktop/桶装水/tongzhuangshui_h5/components/QuShe-inputs/inputs.vue"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
 {
-  data: function data() {
-    return {
-      validApply: true,
-      openId: '',
-      inputDebounceSet: {
-        openInputDebounce: true,
-        delay: 500 },
-
-      titleSet: {
-        size: 14
-        // color: '#f06c7a'
-      },
-      contentSet: {
-        size: 14 },
-
-      buttonStyle: {
-        //按钮样式
-        activeButton: 'background-color: #009688;border-radius: 30px;box-shadow: 2px 2px 1px 1px #009688;height:60upx;font-size:28upx;', //主按钮样式
-        changeButton: 'background-color: #009688;border-radius: 30px;box-shadow: 2px 2px 1px 1px #009688;', //picker类型更改按钮样式
-        selectButton: 'background-color: #009688;border-radius: 30px;box-shadow: 2px 2px 1px 1px #009688;', //picker类型选择按钮样式
-        confirmButton: 'background-color: #009688;border-radius: 30px;box-shadow: 2px 2px 1px 1px #009688;', //picker类型弹出框中确定按钮样式
-        getcodeButton: 'background-color: #009688;border-radius: 30px;box-shadow: 2px 2px 1px 1px #009688;' //获取验证码按钮样式
-      },
-      inputsArray: [
-      {
-        segmentationTitle: '成为送水员', //分割大标题
-        border_top: '1px solid #f2f2f2', //上划线
-        title: '姓名',
-        iconColor: '#009688', //input图标颜色
-        variableName: 'sellerName' //自定义变量名
-      },
-      {
-        title: '手机号',
-        verifyFc: function verifyFc(value) {
-          if (/^[1][3,4,5,7,8][0-9]{9}$/.test(value)) return true;
-          return false;
-        },
-        verifyErr: '请输入正确的手机号码',
-        variableName: 'sellerPhone' //自定义变量名
-      },
-      {
-        type: 'picker-custom2',
-        title: '所属店铺',
-        itemArray: [['空空如也']],
-        chooseName: '选择店铺',
-        // defaultValue: [0], //初始数据
-        onceShowDefaultValue: false, //是否显示初始数据
-        variableName: 'shopId' //自定义变量名
-      }],
-
-      onLoadData: 'data_' };
-
-  },
-  onLoad: function onLoad() {var _this = this;
-    uni.request({
-      url: this.$tempUrl + 'wechat/getOpenId',
-      data: { code: window.location.search.substr(6, 32) },
-      method: 'GET',
-      success: function success(res) {
-        _this.openId = res.data;
-        // console.log(this.openId);
-        uni.request({
-          url: _this.$tempUrl + 'seller/check',
-          data: { openId: _this.openId },
-          method: 'GET',
-          success: function success(res) {
-            if (res.data.code !== 0) {
-              _this.validApply = false;
-            } else {
-              uni.request({
-                url: _this.$tempUrl + 'shop/list',
-                method: 'GET',
-                success: function success(res) {
-                  // console.log(res.data.data);
-                  var temp2 = [];
-                  res.data.data.forEach(function (item) {
-                    temp2.push(item.id + '.' + item.name);
-                  });
-                  // console.log(temp2);
-                  _this.inputsArray[2].itemArray = [temp2];
-                } });
-
-            }
-          } });
-
-      } });
-
-  },
-  methods: {
-    activeFc: function activeFc(res) {var _this2 = this;
-      var _res = res;
-      // uni.showToast({
-      // 	title: '获取输入成功'
-      // });
-      // console.log(_res);
-      // console.log(_res.shopId.result[0].split('.')[0]);
-      uni.request({
-        url: this.$tempUrl + 'seller/insert',
-        method: 'POST',
-        data: {
-          shopId: _res.shopId.result[0].split('.')[0],
-          name: _res.sellerName,
-          phone: _res.sellerPhone,
-          type: 1,
-          wechatOpenid: this.openId },
-
-        success: function success(res) {
-          if (res.data.code === 0) {
-            uni.showModal({
-              title: '申请成功',
-              content: '请耐心等待，我们将在1-2个工作日内给您答复！',
-              showCancel: false,
-              success: function success(res) {
-                if (res.confirm) {
-                  console.log('用户点击确定');
-                  _this2.validApply = false;
-                }
-              } });
-
-          } else {
-            uni.showModal({
-              title: '申请失败',
-              content: '请勿重复申请！',
-              showCancel: false });
-
-            // uni.showToast({ title: '送水员申请失败', icon: 'none' });
-          }
-        } });
-
-    } },
-
-  components: {
-    inputs: _inputs.default } };exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["default"]))
+  onLoad: function onLoad() {
+    window.location.href = this.$tempUrl + 'wechat/authorize?type=sellerApply';
+  } };exports.default = _default;
 
 /***/ }),
 
@@ -277,64 +127,19 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("view", [
-    _c(
-      "view",
-      {
-        directives: [
-          {
-            name: "show",
-            rawName: "v-show",
-            value: _vm.validApply,
-            expression: "validApply"
-          }
-        ]
-      },
-      [
-        _c("inputs", {
-          attrs: {
-            inputsArray: _vm.inputsArray,
-            activeName: "提交",
-            onLoadData: _vm.onLoadData,
-            animationType: "rotate3d-fade",
-            animationDuration: 0.1,
-            submitReSet: "",
-            titleSet: _vm.titleSet,
-            contentSet: _vm.contentSet,
-            buttonStyle: _vm.buttonStyle,
-            inputDebounceSet: _vm.inputDebounceSet,
-            eventid: "c95a9284-0",
-            mpcomid: "c95a9284-0"
-          },
-          on: { chaildOpenEvent: _vm.openWin, activeFc: _vm.activeFc }
-        })
-      ],
-      1
-    ),
-    _c(
-      "view",
-      {
-        directives: [
-          {
-            name: "show",
-            rawName: "v-show",
-            value: _vm.validApply === false,
-            expression: "validApply === false"
-          }
-        ],
-        staticStyle: { "text-align": "center", "padding-top": "20%" }
-      },
-      [
-        _c("image", {
-          attrs: { src: "../../static/img/logo.jpg", mode: "aspectFit" }
-        }),
-        _c("br"),
-        _c("br"),
-        _vm._v("永远相信美好的事情即将发生")
-      ],
-      1
-    )
-  ])
+  return _c(
+    "view",
+    { staticStyle: { "text-align": "center", "padding-top": "20%" } },
+    [
+      _c("image", {
+        attrs: { src: "../../static/img/logo.jpg", mode: "aspectFit" }
+      }),
+      _c("br"),
+      _c("br"),
+      _vm._v("来一桶水")
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true

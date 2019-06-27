@@ -12,7 +12,7 @@
 								<view class="distance" v-show="item.distance < 1000">距离:{{ item.distance }}m</view>
 								<view class="distance" v-show="item.distance > 1000">距离:{{ item.distance / 1000 }}km</view>
 							</view>
-							<view class="addres">{{ item.areaName }}{{ item.address }}</view>
+							<view class="addres">{{ item.areaName }} {{ item.address }}</view>
 						</view>
 					</view>
 				</view>
@@ -247,6 +247,7 @@ export default {
 				success: ret => {
 					if (this.myAddrMain.address != ret.data.address) {
 						console.log('地址已更换');
+						console.log(ret);
 						this.myAddrMain = ret.data;
 						// console.log(ret.data.id);
 						//根据我选择的位置加载附近店铺

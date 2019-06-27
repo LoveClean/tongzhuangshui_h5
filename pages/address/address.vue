@@ -13,7 +13,7 @@
 							<view class="tel">{{ row.contactPhone }}</view>
 							<view class="label" v-if="row.label">{{ row.updateBy }}</view>
 						</view>
-						<view class="address">{{ row.areaName }}-{{ row.address }}</view>
+						<view class="address">{{ row.areaName }} {{ row.address }}</view>
 					</view>
 					<view class="right"><view class="icon bianji" @tap.stop="editButton(row)"></view></view>
 				</view>
@@ -85,25 +85,30 @@ export default {
 		addButton() {
 			console.log('addButton');
 			uni.navigateTo({
-				url: 'addressAdd'
+				url: 'edit'
 			});
 		},
 		editButton(row) {
 			console.log('editButton');
 			uni.navigateTo({
 				url:
-					'addressUpd?id=' +
+					'edit?id=' +
 					row.id +
 					'&contactName=' +
 					row.contactName +
 					'&contactPhone=' +
 					row.contactPhone +
-					'&areaArray=' +
-					row.areaArray +
+					'&areaName=' +
+					row.areaName +
 					'&address=' +
 					row.address +
+					'&latitude=' +
+					row.latitude +
+					'&longitude=' +
+					row.longitude +
 					'&label=' +
-					row.label
+					row.label +
+					'&type=edit'
 			});
 		}
 	}

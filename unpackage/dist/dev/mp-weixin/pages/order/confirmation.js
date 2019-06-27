@@ -449,24 +449,11 @@ var render = function() {
               _vm._v(_vm._s(_vm.addrMain.contactPhone))
             ])
           ]),
-          _vm.addrMain.area
-            ? _c("view", { staticClass: "addres" }, [
-                _vm._v(
-                  _vm._s(_vm.addrMain.area.label) +
-                    "-" +
-                    _vm._s(_vm.addrMain.address)
-                )
-              ])
-            : _vm._e(),
-          _vm.addrMain.areaName
-            ? _c("view", { staticClass: "addres" }, [
-                _vm._v(
-                  _vm._s(_vm.addrMain.areaName) +
-                    "-" +
-                    _vm._s(_vm.addrMain.address)
-                )
-              ])
-            : _vm._e()
+          _c("view", { staticClass: "addres" }, [
+            _vm._v(
+              _vm._s(_vm.addrMain.areaName) + " " + _vm._s(_vm.addrMain.address)
+            )
+          ])
         ])
       ]
     ),

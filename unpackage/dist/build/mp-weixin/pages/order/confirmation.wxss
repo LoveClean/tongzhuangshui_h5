@@ -54,7 +54,7 @@
       height: 60rpx;
 }
 .addr .tel-name {
-    width: 100%;
+    width: 570rpx;
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
@@ -65,7 +65,7 @@
       margin-left: 40rpx;
 }
 .addr .addres {
-    width: 100%;
+    width: 570rpx;
     font-size: 26rpx;
     color: #999;
 }

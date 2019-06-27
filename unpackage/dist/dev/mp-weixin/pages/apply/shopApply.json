@@ -1,5 +1,5 @@
 {
   "usingComponents": {},
-  "navigationBarTitleText": "商户入驻",
-  "softinputNavBar": "none"
+  "enablePullDownRefresh": true,
+  "navigationBarTextStyle": "black"
 }

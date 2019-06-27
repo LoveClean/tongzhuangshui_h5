@@ -1,18 +1,17 @@
 {
   "pages": [
     "pages/tabBar/cart",
-    "pages/tabBar/indexSeller",
-    "pages/tabBar/seller",
     "pages/tabBar/user",
     "pages/order/confirmation",
     "pages/order/orderCoupon",
+    "pages/address/edit",
     "pages/address/address",
-    "pages/address/addressAdd",
-    "pages/address/addressUpd",
-    "pages/apply/indexSellerApply",
-    "pages/apply/indexShopApply",
+    "pages/apply/sellerOrder",
+    "pages/apply/sellerOrder2",
     "pages/apply/sellerApply",
+    "pages/apply/sellerApply2",
     "pages/apply/shopApply",
+    "pages/apply/shopApply2",
     "pages/user/coupon/coupon",
     "pages/user/order_list/order_list",
     "pages/user/order_list/order_list_temp",
@@ -54,5 +53,5 @@
       "desc": "用于为您加载附近的水站"
     }
   },
-  "sitemapLocation": "sitemap15.json"
+  "sitemapLocation": "sitemap71.json"
 }

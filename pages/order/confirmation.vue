@@ -8,8 +8,8 @@
 					<view class="name">{{ addrMain.contactName }}</view>
 					<view class="tel">{{ addrMain.contactPhone }}</view>
 				</view>
-				<view class="addres" v-if="addrMain.area">{{ addrMain.area.label }}-{{ addrMain.address }}</view>
-				<view class="addres" v-if="addrMain.areaName">{{ addrMain.areaName }}-{{ addrMain.address }}</view>
+				<!-- <view class="addres" v-if="addrMain.area">{{ addrMain.area.label }}-{{ addrMain.address }}</view> -->
+				<view class="addres">{{ addrMain.areaName }} {{ addrMain.address }}</view>
 			</view>
 		</view>
 		<!-- 购买商品列表 -->
@@ -306,9 +306,10 @@ export default {
 			width: 60upx;
 			height: 60upx;
 		}
+		// margin-right: 10upx;
 	}
 	.tel-name {
-		width: 100%;
+		width: 570upx;
 		display: flex;
 		font-size: 32upx;
 		.tel {
@@ -316,7 +317,7 @@ export default {
 		}
 	}
 	.addres {
-		width: 100%;
+		width: 570upx;
 		font-size: 26upx;
 		color: #999;
 	}
