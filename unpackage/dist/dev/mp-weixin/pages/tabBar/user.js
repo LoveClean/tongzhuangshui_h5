@@ -233,7 +233,7 @@ __webpack_require__.r(__webpack_exports__);
       mytoolbarList: [
       { text: '我的订单', img: '../../static/img/user/point.png' },
       { text: '优惠券', img: '../../static/img/user/quan.png' },
-      // {text:'新客豪礼',img:'../../static/img/user/renw.png'},
+      { text: '新客豪礼', img: '../../static/img/user/renw.png' },
       // {text:'领红包',img:'../../static/img/user/momey.png'},
 
       { text: '收货地址', img: '../../static/img/user/addr.png'
@@ -257,6 +257,13 @@ __webpack_require__.r(__webpack_exports__);
     this.headerTop = e.scrollTop >= 0 ? null : 0;
     this.statusTop = e.scrollTop >= 0 ? null : -this.statusHeight + 'px';
   },
+  onShareAppMessage: function onShareAppMessage(res) {
+    return {
+      title: '来一桶水小程序，订水又快又方便',
+      path: '/pages/tabBar/cart',
+      imageUrl: '../../static/img/logo.jpg' };
+
+  },
   onLoad: function onLoad() {var _this = this;
     uni.getSystemInfo({
       success: function success(res) {
@@ -264,6 +271,9 @@ __webpack_require__.r(__webpack_exports__);
         console.log(res.model);
       } });
 
+
+    uni.showShareMenu({
+      withShareTicket: true });
 
     this.temp.level = wx.getBatteryInfoSync().level;
     this.temp.isCharging = wx.getBatteryInfoSync().isCharging;
@@ -305,17 +315,17 @@ __webpack_require__.r(__webpack_exports__);
         uni.navigateTo({
           url: '../user/order_list/order_list_temp?tbIndex=-1' });
 
-      } else if (row.text === '收货地址') {
-        uni.navigateTo({
-          url: '../address/address' });
-
       } else if (row.text === '优惠券') {
         uni.navigateTo({
           url: '../user/coupon/coupon' });
 
-      } else if (row.text === '开票申请') {
+      } else if (row.text === '新客豪礼') {
         uni.navigateTo({
-          url: '../address/edit' });
+          url: '../user/coupon/getCoupon?couponsId=1' });
+
+      } else if (row.text === '收货地址') {
+        uni.navigateTo({
+          url: '../address/address' });
 
       }
     },

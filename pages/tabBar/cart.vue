@@ -163,15 +163,25 @@ export default {
 		this.reFlash();
 		// #endif
 	},
+	onShareAppMessage(res) {
+		return {
+			title: '来一桶水小程序，订水又快又方便',
+			path: '/pages/tabBar/cart',
+			imageUrl: '../../static/img/logo.jpg'
+		};
+	},
 	onLoad() {
 		// #ifdef MP-WEIXIN
+		uni.showShareMenu({
+			withShareTicket: true
+		});
 		uni.login({
 			provider: 'weixin',
-			success: function(loginRes) {
-				console.log(loginRes);
-				console.log(loginRes.code);
+			success: loginRes => {
+				// console.log(loginRes);
+				// console.log(loginRes.code);
 				uni.request({
-					url: 'https://tzs.yuanfudashi.com/wechat/getOpenIdXcx',
+					url: this.$tempUrl + 'wechat/getOpenIdXcx',
 					data: {
 						appid: 'wxc04f9bfb1157e062',
 						secret: '9258da2f76f0de7ff1b3d740be743128',
@@ -182,7 +192,7 @@ export default {
 					success: res => {
 						uni.setStorageSync('openId', res.data.openid);
 						uni.request({
-							url: 'https://tzs.yuanfudashi.com/user/insert?wechatOpenid=' + uni.getStorageSync('openId'),
+							url: this.$tempUrl + 'user/insert?wechatOpenid=' + uni.getStorageSync('openId'),
 							method: 'POST',
 							success: res => {}
 						});
@@ -421,6 +431,26 @@ export default {
 
 		//商品跳转
 		toGoods(e) {
+			// uni.getProvider({
+			// 	service: 'share',
+			// 	success: function(res) {
+			// 		console.log(res.provider);
+			// 		if (~res.provider.indexOf('weixin')) {
+			// 			uni.share({
+			// 				provider: 'weixin',
+			// 				scene: 'WXSceneSession',
+			// 				type: 1,
+			// 				summary: '我正在使用HBuilderX开发uni-app，赶紧跟我一起来体验！',
+			// 				success: function(res) {
+			// 					console.log('success:' + JSON.stringify(res));
+			// 				},
+			// 				fail: function(err) {
+			// 					console.log('fail:' + JSON.stringify(err));
+			// 				}
+			// 			});
+			// 		}
+			// 	}
+			// });
 			console.log('点击了商品' + e.id);
 			// uni.showToast({ title: '商品' + e.id, icon: 'none' });
 			// uni.navigateTo({

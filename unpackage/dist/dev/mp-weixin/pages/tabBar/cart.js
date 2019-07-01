@@ -409,15 +409,25 @@ var _uniPopup = _interopRequireDefault(__webpack_require__(/*! @/components/uni-
     this.reFlash();
 
   },
-  onLoad: function onLoad() {
+  onShareAppMessage: function onShareAppMessage(res) {
+    return {
+      title: '来一桶水小程序，订水又快又方便',
+      path: '/pages/tabBar/cart',
+      imageUrl: '../../static/img/logo.jpg' };
+
+  },
+  onLoad: function onLoad() {var _this = this;
+
+    uni.showShareMenu({
+      withShareTicket: true });
 
     uni.login({
       provider: 'weixin',
       success: function success(loginRes) {
-        console.log(loginRes);
-        console.log(loginRes.code);
+        // console.log(loginRes);
+        // console.log(loginRes.code);
         uni.request({
-          url: 'https://tzs.yuanfudashi.com/wechat/getOpenIdXcx',
+          url: _this.$tempUrl + 'wechat/getOpenIdXcx',
           data: {
             appid: 'wxc04f9bfb1157e062',
             secret: '9258da2f76f0de7ff1b3d740be743128',
@@ -428,7 +438,7 @@ var _uniPopup = _interopRequireDefault(__webpack_require__(/*! @/components/uni-
           success: function success(res) {
             uni.setStorageSync('openId', res.data.openid);
             uni.request({
-              url: 'https://tzs.yuanfudashi.com/user/insert?wechatOpenid=' + uni.getStorageSync('openId'),
+              url: _this.$tempUrl + 'user/insert?wechatOpenid=' + uni.getStorageSync('openId'),
               method: 'POST',
               success: function success(res) {} });
 
@@ -487,35 +497,35 @@ var _uniPopup = _interopRequireDefault(__webpack_require__(/*! @/components/uni-
     }
   },
   methods: {
-    reFlash: function reFlash() {var _this = this;
+    reFlash: function reFlash() {var _this2 = this;
       uni.getStorage({
         key: 'confirmAddr',
         success: function success(ret) {
-          if (_this.myAddrMain.address != ret.data.address) {
+          if (_this2.myAddrMain.address != ret.data.address) {
             console.log('地址已更换');
             console.log(ret);
-            _this.myAddrMain = ret.data;
+            _this2.myAddrMain = ret.data;
             // console.log(ret.data.id);
             //根据我选择的位置加载附近店铺
-            _this.loadShopList(ret.data);
+            _this2.loadShopList(ret.data);
           }
         },
         fail: function fail() {
-          _this.myAddrMain = { address: '点击选择地址' };
-          console.log(_this.myAddrMain);
+          _this2.myAddrMain = { address: '点击选择地址' };
+          console.log(_this2.myAddrMain);
           uni.getLocation({
             type: 'wgs84',
             success: function success(res) {
               console.log('当前位置的经度：' + res.longitude);
               console.log('当前位置的纬度：' + res.latitude);
-              _this.loadShopList(res);
+              _this2.loadShopList(res);
               uni.request({
-                url: _this.$tempUrl + 'common/geocoderByLocation',
+                url: _this2.$tempUrl + 'common/geocoderByLocation',
                 method: 'GET',
                 data: { lat: res.latitude, lng: res.longitude },
                 success: function success(res) {
                   // console.log(res.data.result.address);
-                  _this.myAddrMain = { address: res.data.result.address_component.street_number };
+                  _this2.myAddrMain = { address: res.data.result.address_component.street_number };
                 } });
 
             } });
@@ -528,7 +538,7 @@ var _uniPopup = _interopRequireDefault(__webpack_require__(/*! @/components/uni-
         url: '../address/address' });
 
     },
-    loadShopList: function loadShopList(res) {var _this2 = this;
+    loadShopList: function loadShopList(res) {var _this3 = this;
       uni.showLoading({ title: '加载中' });
       uni.request({
         url: this.$tempUrl + 'shop/listByAddress',
@@ -541,8 +551,8 @@ var _uniPopup = _interopRequireDefault(__webpack_require__(/*! @/components/uni-
         success: function success(res) {
           if (res.data.data.length === 0) {
             uni.hideLoading();
-            _this2.addrMain = {};
-            _this2.goodsList = [];
+            _this3.addrMain = {};
+            _this3.goodsList = [];
             uni.showModal({
               title: '啊哦，加载失败',
               content: '您附近暂无入驻商家哦，去更换一个新地址吧～',
@@ -571,12 +581,12 @@ var _uniPopup = _interopRequireDefault(__webpack_require__(/*! @/components/uni-
             // });
           } else {
             uni.showToast({ title: '商铺加载完毕', icon: 'success' });
-            _this2.loadProduct(res);
+            _this3.loadProduct(res);
           }
         } });
 
     },
-    loadProduct: function loadProduct(_res) {var _this3 = this;
+    loadProduct: function loadProduct(_res) {var _this4 = this;
       this.items = _res.data.data;
       this.addrMain = this.items[0];
       uni.request({
@@ -586,14 +596,14 @@ var _uniPopup = _interopRequireDefault(__webpack_require__(/*! @/components/uni-
         success: function success(res) {
           uni.hideLoading();
           // console.log(res.data.data);
-          _this3.goodsList = res.data.data;
+          _this4.goodsList = res.data.data;
           if (res.data.data.length === 0) {
             uni.showToast({ title: '啊哦，此商家还未上架商品，换家点吧>.<#', icon: 'none' });
           }
         } });
 
     },
-    addrChange: function addrChange(item) {var _this4 = this;
+    addrChange: function addrChange(item) {var _this5 = this;
       console.log(item.id);
       this.type = '';
       this.addrMain = item;
@@ -603,7 +613,7 @@ var _uniPopup = _interopRequireDefault(__webpack_require__(/*! @/components/uni-
         method: 'GET',
         success: function success(res) {
           console.log(res.data.data);
-          _this4.goodsList = res.data.data;
+          _this5.goodsList = res.data.data;
           if (res.data.data.length === 0) {
             uni.showToast({ title: '啊哦，此商家还未上架商品，换家点吧>.<#', icon: 'none' });
           }
@@ -627,7 +637,7 @@ var _uniPopup = _interopRequireDefault(__webpack_require__(/*! @/components/uni-
       //初始坐标
       this.initXY = [event.touches[0].pageX, event.touches[0].pageY];
     },
-    touchMove: function touchMove(index, event) {var _this5 = this;
+    touchMove: function touchMove(index, event) {var _this6 = this;
       //多点触控不触发
       if (event.touches.length > 1) {
         this.isStop = true;
@@ -654,7 +664,7 @@ var _uniPopup = _interopRequireDefault(__webpack_require__(/*! @/components/uni-
           this.theIndex = null;
           this.isStop = true;
           setTimeout(function () {
-            _this5.oldIndex = null;
+            _this6.oldIndex = null;
           }, 150);
         }
       }
@@ -667,6 +677,26 @@ var _uniPopup = _interopRequireDefault(__webpack_require__(/*! @/components/uni-
 
     //商品跳转
     toGoods: function toGoods(e) {
+      // uni.getProvider({
+      // 	service: 'share',
+      // 	success: function(res) {
+      // 		console.log(res.provider);
+      // 		if (~res.provider.indexOf('weixin')) {
+      // 			uni.share({
+      // 				provider: 'weixin',
+      // 				scene: 'WXSceneSession',
+      // 				type: 1,
+      // 				summary: '我正在使用HBuilderX开发uni-app，赶紧跟我一起来体验！',
+      // 				success: function(res) {
+      // 					console.log('success:' + JSON.stringify(res));
+      // 				},
+      // 				fail: function(err) {
+      // 					console.log('fail:' + JSON.stringify(err));
+      // 				}
+      // 			});
+      // 		}
+      // 	}
+      // });
       console.log('点击了商品' + e.id);
       // uni.showToast({ title: '商品' + e.id, icon: 'none' });
       // uni.navigateTo({

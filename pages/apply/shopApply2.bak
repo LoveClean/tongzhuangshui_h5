@@ -1,0 +1,235 @@
+<template>
+	<view>
+		<view v-show="validApply">
+			<view class="content">
+				<view class="row">
+					<view class="nominal">店铺名</view>
+					<view class="input"><input placeholder="请输入店铺名" type="text" v-model="shopName" /></view>
+				</view>
+				<view class="row">
+					<view class="nominal">所在地区</view>
+					<view class="input" @tap="chooseCity">{{ region.address }}</view>
+				</view>
+				<view class="row">
+					<view class="nominal">详细地址</view>
+					<view class="input"><textarea v-model="region.name" auto-height="true" placeholder="输入详细地址"></textarea></view>
+				</view>
+				<view class="row">
+					<view class="nominal">经营人</view>
+					<view class="input"><input placeholder="请输入经营人" type="text" v-model="name" /></view>
+				</view>
+				<view class="row">
+					<view class="nominal">联系电话</view>
+					<view class="input"><input placeholder="请输入店铺联系电话" type="text" v-model="tel" /></view>
+				</view>
+			</view>
+			<view class="save" @tap="save"><view class="btn">提交</view></view>
+		</view>
+		<view v-show="validApply === false" style="text-align: center; padding-top: 20%;">
+			<image src="../../static/img/logo.jpg" mode="aspectFit"></image>
+			<br />
+			<br />
+			永远相信美好的事情即将发生
+		</view>
+	</view>
+</template>
+
+<script>
+export default {
+	data() {
+		return {
+			validApply: true,
+			openId: '',
+			shopName: '',
+			name: '',
+			tel: '',
+			region: { address: '请点击选择地址' }
+		};
+	},
+	onLoad() {
+		uni.request({
+			url: this.$tempUrl + 'wechat/getOpenId',
+			data: { code: window.location.search.substr(6, 32) },
+			method: 'GET',
+			success: res => {
+				this.openId = res.data;
+				// console.log(this.openId);
+				uni.request({
+					url: this.$tempUrl + 'seller/check',
+					data: { openId: this.openId },
+					method: 'GET',
+					success: res => {
+						if (res.data.code !== 0) {
+							this.validApply = false;
+						}
+					}
+				});
+			}
+		});
+	},
+	methods: {
+		chooseCity() {
+			uni.chooseLocation({
+				success: res => {
+					// console.log(res);
+					this.region = res;
+				}
+			});
+		},
+		save() {
+			if (!this.shopName) {
+				uni.showToast({ title: '请输入店铺名', icon: 'none' });
+				return;
+			}
+			if (!this.tel) {
+				uni.showToast({ title: '请输入收件人电话号码', icon: 'none' });
+				return;
+			}
+			if (!this.areaName == '请点击选择地址') {
+				uni.showToast({ title: '请选择收件地址', icon: 'none' });
+				return;
+			}
+			if (!this.address) {
+				uni.showToast({ title: '请输入收件人详细地址', icon: 'none' });
+				return;
+			}
+			if (!this.name) {
+				uni.showToast({ title: '请输入经营人', icon: 'none' });
+				return;
+			}
+			uni.request({
+				url: this.$tempUrl + 'shop/seller/insert',
+				method: 'POST',
+				data: {
+					address: this.region.name,
+					areaCode: '000000',
+					areaName: this.region.address,
+					contact: this.tel,
+					latitude: this.region.latitude,
+					longitude: this.region.longitude,
+					name: this.shopName,
+					businessLicenseImg: '空'
+				},
+				success: res => {
+					if (res.data.code === 0) {
+						uni.request({
+							url: this.$tempUrl + 'seller/insert',
+							method: 'POST',
+							data: {
+								shopId: res.data.data.id,
+								name: this.name,
+								phone: this.tel,
+								type: 2,
+								wechatOpenid: this.openId
+							},
+							success: res => {
+								if (res.data.code === 0) {
+									uni.showModal({
+										title: '申请成功',
+										content: '请耐心等待，我们将在1-2个工作日内给您答复！',
+										showCancel: false,
+										success: res => {
+											if (res.confirm) {
+												console.log('用户点击确定');
+												this.validApply = false;
+											}
+										}
+									});
+								} else {
+									uni.showModal({
+										title: '申请失败',
+										content: '请勿重复申请！',
+										showCancel: false
+									});
+									// uni.showToast({ title: '店长申请失败', icon: 'none' });
+								}
+							}
+						});
+					} else {
+						uni.showToast({ title: '店铺申请失败', icon: 'none' });
+					}
+				}
+			});
+		}
+	}
+};
+</script>
+
+<style lang="scss">
+.save {
+	view {
+		display: flex;
+	}
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	height: 120upx;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	.btn {
+		box-shadow: 0upx 5upx 10upx rgba(0, 0, 0, 0.4);
+		width: 70%;
+		height: 80upx;
+		border-radius: 80upx;
+		background-color: #009688;
+		color: #fff;
+		justify-content: center;
+		align-items: center;
+		.icon {
+			height: 80upx;
+			color: #fff;
+			font-size: 30upx;
+			justify-content: center;
+			align-items: center;
+		}
+		font-size: 30upx;
+	}
+}
+.content {
+	display: flex;
+	flex-wrap: wrap;
+	view {
+		display: flex;
+	}
+	.row {
+		width: 94%;
+
+		margin: 0 3%;
+		border-top: solid 1upx #eee;
+		.nominal {
+			width: 30%;
+			height: 120upx;
+			font-weight: 200;
+			font-size: 30upx;
+			align-items: center;
+		}
+		.input {
+			width: 70%;
+			padding: 20upx 0;
+			align-items: center;
+			font-size: 30upx;
+			&.switch {
+				justify-content: flex-end;
+			}
+			.textarea {
+				margin: 20upx 0;
+				min-height: 120upx;
+			}
+			.radio {
+				margin-right: 20upx;
+			}
+		}
+		.del {
+			width: 100%;
+			height: 100upx;
+			justify-content: center;
+			align-items: center;
+			font-size: 36upx;
+			color: #f06c7a;
+			background-color: rgba(255, 0, 0, 0.05);
+			border-bottom: solid 1upx #eee;
+		}
+	}
+}
+</style>

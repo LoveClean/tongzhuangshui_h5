@@ -12,6 +12,7 @@
     "pages/apply/sellerApply2",
     "pages/apply/shopApply",
     "pages/apply/shopApply2",
+    "pages/user/coupon/getCoupon",
     "pages/user/coupon/coupon",
     "pages/user/order_list/order_list",
     "pages/user/order_list/order_list_temp",
