@@ -117,6 +117,14 @@
 				"softinputNavBar": "none"
 			}
 		}, {
+			"path": "pages/user/deposit/deposit",
+			"style": {
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTitleText": "充值",
+				"backgroundColorTop": "#ffffff",
+				"backgroundColorBottom": "#ffffff"
+			}
+		}, {
 			"path": "pages/user/coupon/coupon",
 			"style": {
 				"navigationBarTitleText": "优惠券",
@@ -167,15 +175,22 @@
 		// 		"backgroundColorTop": "#ffffff",
 		// 		"backgroundColorBottom": "#ffffff"
 		// 	}
-		// }, {
-		// 	"path": "pages/pay/success/success",
-		// 	"style": {
-		// 		"navigationBarBackgroundColor": "#ffffff",
-		// 		"navigationBarTitleText": "支付成功",
-		// 		"backgroundColorTop": "#ffffff",
-		// 		"backgroundColorBottom": "#ffffff"
-		// 	}
 		// }
+		, {
+			"path": "pages/pay/success/success",
+			"style": {
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTitleText": "支付成功",
+				"backgroundColorTop": "#ffffff",
+				"backgroundColorBottom": "#ffffff"
+			}
+		}, {
+			"path": "pages/user/card/card",
+			"style": {
+				"navigationBarTitleText": "卡包",
+				"softinputNavBar": "none"
+			}
+		}
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

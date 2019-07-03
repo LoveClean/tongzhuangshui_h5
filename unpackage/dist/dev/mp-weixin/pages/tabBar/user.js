@@ -202,8 +202,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-
 {
   data: function data() {
     return {
@@ -217,8 +215,8 @@ __webpack_require__.r(__webpack_exports__);
         username: 'Love clean',
         face: '../../static/img/log.png',
         signature: '我的个性签名。',
-        integral: 0,
-        balance: 0,
+        integral: '黄哥的水站',
+        balance: 10,
         envelope: 0 },
 
       // 订单类型
@@ -231,12 +229,12 @@ __webpack_require__.r(__webpack_exports__);
 
       // 工具栏列表
       mytoolbarList: [
-      { text: '我的订单', img: '../../static/img/user/point.png' },
-      { text: '优惠券', img: '../../static/img/user/quan.png' },
-      { text: '新客豪礼', img: '../../static/img/user/renw.png' },
+      { url: '../user/order_list/order_list_temp?tbIndex=-1', text: '我的订单', img: '../../static/img/user/point.png' },
+      { url: '../user/coupon/coupon', text: '优惠券', img: '../../static/img/user/quan.png' },
+      { url: '../user/coupon/getCoupon?couponsId=1', text: '新客豪礼', img: '../../static/img/user/renw.png' },
       // {text:'领红包',img:'../../static/img/user/momey.png'},
 
-      { text: '收货地址', img: '../../static/img/user/addr.png'
+      { url: '../address/address', text: '收货地址', img: '../../static/img/user/addr.png'
         // {text:'账户安全',img:'../../static/img/user/security.png'},
         // {text:'银行卡',img:'../../static/img/user/bank.png'},
         // {text:'抽奖',img:'../../static/img/user/choujiang.png'},
@@ -310,25 +308,6 @@ __webpack_require__.r(__webpack_exports__);
 
   },
   methods: {
-    box: function box(row) {
-      if (row.text === '我的订单') {
-        uni.navigateTo({
-          url: '../user/order_list/order_list_temp?tbIndex=-1' });
-
-      } else if (row.text === '优惠券') {
-        uni.navigateTo({
-          url: '../user/coupon/coupon' });
-
-      } else if (row.text === '新客豪礼') {
-        uni.navigateTo({
-          url: '../user/coupon/getCoupon?couponsId=1' });
-
-      } else if (row.text === '收货地址') {
-        uni.navigateTo({
-          url: '../address/address' });
-
-      }
-    },
     //消息列表
     toMsg: function toMsg() {
       uni.navigateTo({
@@ -363,6 +342,17 @@ __webpack_require__.r(__webpack_exports__);
         return true;
       }
       return false;
+    },
+    toCard: function toCard() {
+      uni.navigateTo({
+        url: '../user/card/card' });
+
+    },
+    toPage: function toPage(url) {
+      // console.log('url: ' + url);
+      uni.navigateTo({
+        url: url });
+
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["default"]))
 
@@ -492,7 +482,38 @@ var render = function() {
             ]
           )
         })
-      )
+      ),
+      _c("view", { staticClass: "balance-info" }, [
+        _c("view", { staticClass: "left" }, [
+          _c("view", { staticClass: "box" }, [
+            _c("view", { staticClass: "num" }, [
+              _vm._v(_vm._s(_vm.user.integral))
+            ]),
+            _c("view", { staticClass: "text" }, [_vm._v("默认卡")])
+          ]),
+          _c("view", { staticClass: "box" }, [
+            _c("view", { staticClass: "num" }, [
+              _vm._v("￥" + _vm._s(_vm.user.balance))
+            ]),
+            _c("view", { staticClass: "text" }, [_vm._v("余额")])
+          ])
+        ]),
+        _c("view", { staticClass: "right" }, [
+          _c(
+            "view",
+            {
+              staticClass: "box",
+              attrs: { eventid: "7f64c7ac-1" },
+              on: {
+                tap: function($event) {
+                  _vm.toCard()
+                }
+              }
+            },
+            [_vm._m(1), _c("view", { staticClass: "text" }, [_vm._v("卡包")])]
+          )
+        ])
+      ])
     ]),
     _c("view", { staticClass: "toolbar" }, [
       _c("view", { staticClass: "title" }, [_vm._v("我的工具栏")]),
@@ -505,10 +526,10 @@ var render = function() {
             {
               key: index,
               staticClass: "box",
-              attrs: { eventid: "7f64c7ac-1-" + index },
+              attrs: { eventid: "7f64c7ac-2-" + index },
               on: {
                 tap: function($event) {
-                  _vm.box(row)
+                  _vm.toPage(row.url)
                 }
               }
             },
@@ -532,6 +553,14 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("view", { staticClass: "img" }, [
       _c("image", { attrs: { src: "../../static/img/VIP.png" } })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("view", { staticClass: "img" }, [
+      _c("view", { staticClass: "icon chongzhi" })
     ])
   }
 ]

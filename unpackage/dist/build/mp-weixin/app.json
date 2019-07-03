@@ -13,11 +13,14 @@
     "pages/apply/shopApply",
     "pages/apply/shopApply2",
     "pages/user/coupon/getCoupon",
+    "pages/user/deposit/deposit",
     "pages/user/coupon/coupon",
     "pages/user/order_list/order_list",
     "pages/user/order_list/order_list_temp",
     "pages/user/setting/setting",
-    "pages/user/myQR/myQR"
+    "pages/user/myQR/myQR",
+    "pages/pay/success/success",
+    "pages/user/card/card"
   ],
   "subPackages": [],
   "window": {

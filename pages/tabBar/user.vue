@@ -49,36 +49,34 @@
 				</view>
 			</view>
 			<!-- 余额 -->
-			<!-- <view class="balance-info">
+			<view class="balance-info">
 				<view class="left">
 					<view class="box">
-						<view class="num">{{user.integral}}</view>
-						<view class="text">积分</view>
+						<view class="num">{{ user.integral }}</view>
+						<view class="text">默认卡</view>
 					</view>
-					<view class="box">
-						<view class="num">{{user.envelope}}</view>
+					<!-- <view class="box">
+						<view class="num">{{ user.envelope }}</view>
 						<view class="text">佣金</view>
-					</view>
+					</view> -->
 					<view class="box">
-						<view class="num">{{user.balance}}</view>
+						<view class="num">￥{{ user.balance }}</view>
 						<view class="text">余额</view>
 					</view>
 				</view>
 				<view class="right">
-					<view class="box">
-						<view class="img">
-							<view class="icon chongzhi"></view>
-						</view>
-						<view class="text">充值</view>
+					<view class="box" @tap="toCard()">
+						<view class="img"><view class="icon chongzhi"></view></view>
+						<view class="text">卡包</view>
 					</view>
 				</view>
-			</view> -->
+			</view>
 		</view>
 		<!-- 工具栏 -->
 		<view class="toolbar">
 			<view class="title">我的工具栏</view>
 			<view class="list">
-				<view class="box" v-for="(row, index) in mytoolbarList" :key="index" @tap="box(row)">
+				<view class="box" v-for="(row, index) in mytoolbarList" :key="index" @tap="toPage(row.url)">
 					<view class="img"><image :src="row.img"></image></view>
 					<view class="text">{{ row.text }}</view>
 				</view>
@@ -102,8 +100,8 @@ export default {
 				username: 'Love clean',
 				face: '../../static/img/log.png',
 				signature: '我的个性签名。',
-				integral: 0,
-				balance: 0,
+				integral: '黄哥的水站',
+				balance: 10,
 				envelope: 0
 			},
 			// 订单类型
@@ -116,12 +114,12 @@ export default {
 			],
 			// 工具栏列表
 			mytoolbarList: [
-				{ text: '我的订单', img: '../../static/img/user/point.png' },
-				{ text: '优惠券', img: '../../static/img/user/quan.png' },
-				{ text: '新客豪礼', img: '../../static/img/user/renw.png' },
+				{ url: '../user/order_list/order_list_temp?tbIndex=-1', text: '我的订单', img: '../../static/img/user/point.png' },
+				{ url: '../user/coupon/coupon', text: '优惠券', img: '../../static/img/user/quan.png' },
+				{ url: '../user/coupon/getCoupon?couponsId=1', text: '新客豪礼', img: '../../static/img/user/renw.png' },
 				// {text:'领红包',img:'../../static/img/user/momey.png'},
 
-				{ text: '收货地址', img: '../../static/img/user/addr.png' }
+				{ url: '../address/address', text: '收货地址', img: '../../static/img/user/addr.png' }
 				// {text:'账户安全',img:'../../static/img/user/security.png'},
 				// {text:'银行卡',img:'../../static/img/user/bank.png'},
 				// {text:'抽奖',img:'../../static/img/user/choujiang.png'},
@@ -195,25 +193,6 @@ export default {
 		});
 	},
 	methods: {
-		box(row) {
-			if (row.text === '我的订单') {
-				uni.navigateTo({
-					url: '../user/order_list/order_list_temp?tbIndex=-1'
-				});
-			} else if (row.text === '优惠券') {
-				uni.navigateTo({
-					url: '../user/coupon/coupon'
-				});
-			} else if (row.text === '新客豪礼') {
-				uni.navigateTo({
-					url: '../user/coupon/getCoupon?couponsId=1'
-				});
-			} else if (row.text === '收货地址') {
-				uni.navigateTo({
-					url: '../address/address'
-				});
-			}
-		},
 		//消息列表
 		toMsg() {
 			uni.navigateTo({
@@ -248,6 +227,17 @@ export default {
 				return true;
 			}
 			return false;
+		},
+		toCard() {
+			uni.navigateTo({
+				url: '../user/card/card'
+			});
+		},
+		toPage(url) {
+			// console.log('url: ' + url);
+			uni.navigateTo({
+				url: url
+			});
 		}
 	}
 };
@@ -483,14 +473,16 @@ page {
 					display: flex;
 					justify-content: center;
 					align-items: flex-end;
-					color: #f9a453;
+					// color: #f9a453;
+					color: #000000;
+					font-weight: bold;
 				}
 				.text {
 					width: 100%;
 					display: flex;
 					justify-content: center;
-					color: #3d3d3d;
-					font-size: 28upx;
+					color: #6d6d6d;
+					font-size: 22upx;
 				}
 			}
 		}
